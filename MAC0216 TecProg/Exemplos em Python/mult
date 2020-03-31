@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+class A:
+    def __init__(self,n):
+        self.nome = n
+
+    def oi(self):
+        print("Viva eu "+self.nome)
+
+class B:
+    def __init__(self,n):
+        self.nome = n
+        self.outro = "*** "+n+ " ***"
+
+    def olá(self):
+        print("Êita eu "+self.nome +"\n"+self.outro)
+
+# a = A("Julius")
+# b = B("Brutus")
+
+# a.oi()
+# b.olá()
+############################################################
+
+class Borgia(B,A):
+    def __init__(self, n):
+        super().__init__(n)
+        #self.outro = "Que tal um drinque?"
+        #B.__init__(s,n)
+
+l = Borgia("Lucretia")
+
+l.oi()
+l.olá()
+

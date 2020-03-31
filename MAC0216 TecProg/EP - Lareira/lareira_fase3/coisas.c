@@ -1,0 +1,1 @@
+/*Este modulo contem a estoria e toda a inicializacao dos elementos.*/

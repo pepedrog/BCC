@@ -1,0 +1,21 @@
+Relatório bem simples da ideia:
+
+- ULA de 8 buts que complementa os restantes com 0
+
+A ideia dos processos é
+
+1ª subida do clock: Coloca a instrução no IR
+1ª descida do clock: Coloca o PC no endereço requisitado na instrução
+2ª subida do clock: Executa a ação (grava/imprime)
+2ª descida do clock: Recoloca o PC aonde estava, mas na próxima posição
+
+Tem alguns lugares com uma parefernalha de Flip-flop D, 
+mas são para não executar uma ação duas vezes, nas duas subidas do clock
+
+A instrução 0f muda o endereço assincronamente porque senão ele dissincroniza o PC, o IR e o clock com frequência dividida
+
+Não consegui fazer funcionar direito depois de várias instruções, muito infelizmente
+
+Mas foi bem legal fazer funcionar as que funcionam, acredito que problema esteja na ULA :( ou na sincronização dos dois clocks (o principal e o de frequência dividida)
+
+è isto que temos para hoje :/ infelizmente acabou meu tempo de tentar corrigir, pois deixei meio pra ultima hora irresponsavelmente. Abraços !

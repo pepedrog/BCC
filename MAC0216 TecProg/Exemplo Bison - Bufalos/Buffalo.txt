@@ -1,0 +1,47 @@
+Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo
+From Wikipedia, the free encyclopedia
+
+Simplified parse tree
+
+                           S
+						  /	\_____
+						 / 	   	  \
+					   NP	       \
+					  /  \	   	 	\
+					 / 	  \    		VP 
+				   NP  	   RC  		/ \
+				  /	\ 	   / \ 	   V   NP
+				PN 	 N	  NP  V		  / \
+						 / \ 		 PN	 N
+						PN  N			  
+										  
+S = sentence
+NP = noun phrase
+RC = relative clause
+VP = verb phrase
+PN = proper noun
+N = noun
+V = verb
+
+"Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo." is a
+grammatically correct sentence in American English, often presented as
+an example of how homonyms and homophones can be used to create
+complicated linguistic constructs through lexical ambiguity and the
+usage of homophony and homonymy. It has been discussed in literature in
+various forms since 1967, when it appeared in Dmitri Borgmann's Beyond
+Language: Adventures in Word and Thought.
+
+The sentence employs three distinct meanings of the word buffalo:
+
+as a proper noun to refer to a specific place named Buffalo, the city of
+Buffalo, New York being the most notable;
+
+as a verb (uncommon in regular usage) to buffalo, meaning "to bully,
+harass, or intimidate" or "to baffle"; and
+
+as a noun to refer to the animal, bison (often called buffalo in North
+America). The plural is also buffalo.
+
+More easily decoded, though semantically equivalent, would be: Buffalo
+from Buffalo whom other buffalo from Buffalo bully [themselves] bully
+buffalo from Buffalo.

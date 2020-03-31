@@ -1,0 +1,54 @@
+----------RELATÓRIO---------
+
+RESUMO DA IDEIA: 
+Criar um vetor com os números já calculados, para poder reaproveitar esses números,
+por exemplo, 
+calcula-se 4: 4 -> 2 -> 1;
+depois preciso calcular 8: 8 -> 4 pronto! pois já conheço a quantidade de passos de 4.
+
+MAIOR PROBLEMA ENCONTRADO (e o angustiante motivo do atraso :[ ):
+O vetor dos passos cresce bastante, 
+e infelizmente tentei bastante mas não consegui fazer uma função 'resize'
+para que a memória aloada crescesse dinamicamente.. Ainda não consegui entender oq está errado :/
+
+Assim, para pequenos intervalos, talvez não valha a pena guardar o vetor, mas para intervalos maiores há uma melhora de eficiencia,
+mesmo tendo que percorrer tal vetor fazendo buscas e inserções, é melhor que calcular centenas de passos de collatz repetidamente.
+
+Tentei deixar as buscas e inserções um pouco mais eficientes também..
+
+Acredito que esses problemas com a memória se devem a minha inexperiência em C, espero mais pra frente conseguir evoluir,
+
+ESTRUTURA RESUMIDA:
+
+Um 'for' para cada número do intervalo
+      |
+      V 
+Verificar se esse numero já foi calculado
+      |
+      V
+Se ainda não, ir aplicando a função até chegar num número já calculado
+(sei que esse loop tem fim pois o vetor é iniciado com um elemento (o 1, e todos os números convergem a ele :] ))
+      |
+      V
+Somar os passos desse elemento já conhecido ao número de repetições do passo anterior
+      |
+      V
+É isto :D
+
+
+CURIOSIDADES:
+Mesmo iniciando o valor máximo do vetor com um grande espaço, por algum motivo 
+** não consigo testar para intervalor maiores que [1,33654]
+
+Pensei em fazer de uma maneira recursiva algo do tipo log2(3n + 1), mas não saberia implementar um log de modo eficiente
+Tentei tbm estabelecer alguma relação com a congruência mod 3 dos números, uma vez que se o número é multiplo de 3, 'a arvore'
+sempre crescerá multiplicando por 2, além de interessantemente toda a sequência de numeros de uma mesma 'raiz' se reveza entre 1 mod3 e 2 mod3
+(tipo 5, 10, 20, 40...)
+
+Sobre o atraso:
+Me enrolei bastante tentando resolver segmentations faults everywhere, não sei qual o critério para a rigidez dos prazos,
+mas nos próximos me planejarei melhor para não cometer esse engano novamente :(
+
+Boa correção! 
+
+

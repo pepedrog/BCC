@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+import random
+from  card import Carta
+
+class Baralho:
+
+    def __init__(self) :
+        """Cria um deck de cartas em ordem"""
+        self.cartas = []
+        for n in ["Ouros", "Espadas", "Copas", "Paus"] :
+            for v in ["Ás"] + [c for c in range(2,11)] +\
+                     [" J"," Q", " K"]:
+                # self.cartas.append(Carta(n,"%2s"%(str(v))))
+                self.cartas.append(Carta(n,"{:2}".format(v)))
+                                    
+    def print(self):
+        for c in self.cartas :
+            print(c)
+    
+    def embaralha(self) :
+        emb = []
+        while len(self.cartas) > 0:
+            i = random.randrange(len(self.cartas))
+            emb.append(self.cartas[i])
+            self.cartas.pop(i)
+        self.cartas = emb.copy()
+
+    def distribui(self, nj, ncartas) :
+        if nj * ncartas > len(self.cartas):
+            return None
+        mãos = [] * nj
+        for j in range(nj):
+            mãos.append([])
+
+        for i in range(ncartas) :
+            for j in range(nj):
+                mãos[j].append(self.cartas.pop())
+        return mãos
+        
+##################################################
+b = Baralho()
+b.print()
+b.embaralha()
+b.print()
+print("----" * 5)
+m = b.distribui(4,5)
+
+for i in range(len(m)) :
+    for j in range(len(m[i])) :
+        print(m[i][j])
+    print("----")
+    
+
+

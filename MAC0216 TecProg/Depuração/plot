@@ -1,0 +1,112 @@
+#!/usr/bin/python3
+
+from PIL  import Image
+from math import fabs
+import argparse
+
+# tamanho da tela
+Tx = 800
+Ty = 800
+
+# Domínio da função
+[xi,xf] = [-5.0, 5.0]
+[yi,yf] = [-5.0, 5.0]
+
+# função desejada
+def f(x,y):
+    return x*x*x + y*y
+
+# parâmetros de cálculo
+h = .3
+ε = .15
+
+# verifica se x é múltiplo de h a menos de ε
+def modulo(z) :
+    m = fabs(z) + ε
+    k = m//h
+    if (m-k*h) < ε/2.0 :
+        return True
+    else:
+        return False
+
+parser = argparse.ArgumentParser(
+    description='''
+    Implementa o algoritmo da banheira de J. Plauger
+    '''
+    )
+
+e = 42.
+parser.add_argument('-e',
+                    help='redefine o erro na altura',
+                    metavar="ε",
+                    default=.15,
+                    action="store",
+                    type=float)
+
+parser.add_argument('-H',
+                    help='redefine a altura entre níveis',
+                    metavar="nível",
+                    default=.3,
+                    action="store",
+                    type=float)
+
+parser.add_argument('-X',
+                    help='redefine a largura da imagem',
+                    metavar="larg",
+                    default=800,
+                    action="store",
+                    type=int)
+
+parser.add_argument('-Y',
+                    help='redefine a altura da imagem',
+                    metavar="alt",
+                    default=800,
+                    action="store",
+                    type=int)
+
+parser.add_argument('-i',
+                    help='redefine canto superior esquerdo do domínio',
+                    default=(-5.0, 5.0),
+                    metavar=("x","y"),                    
+                    action="store",
+                    nargs=2,
+                    type=float)
+
+parser.add_argument('-f',
+                    help='redefine canto inferior direito do domínio',
+                    metavar=("x","y"),
+                    default=(-5.0, 5.0),
+                    action="store",
+                    nargs=2,
+                    type=float)
+
+args = parser.parse_args()
+
+ε = args.e
+h = args.H
+Tx = args.X
+Ty = args.Y
+[xi,xf] = args.i
+[yi,yf] = args.f
+
+
+# Cria a imagem
+img = Image.new('1', (Tx,Ty))
+pix = img.load()
+
+# incremento em x e y
+δx = (xf - xi)/Tx
+δy = (yf - yi)/Ty
+
+for aj in range(Ty) :
+    for ai in range(Tx) :
+        z=f(xi+δx*ai, yi+δy*aj)
+        if modulo(z) :
+            pix[ai,aj] = 0xffffff
+        else:
+            pix[ai,aj] = 0
+
+
+# Mostra o resultado
+img.show()
+

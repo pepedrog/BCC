@@ -1,0 +1,66 @@
+#!/usr/bin/python3
+import random
+
+class Carta :
+    naipes= {
+        'Espadas': '♠',
+        'Copas':'♥',
+        'Ouros': '♦',
+        'Paus': '♣'
+        }
+    
+    def __init__(self, n,v) :
+        """n é o naipe e v é o valor"""
+        self.naipe = n
+        self.valor = v
+    def __str__(self):
+        return self.valor + Carta.naipes[self.naipe]
+
+
+class Baralho :
+    def __init__(self) :
+        """Cria um deck de cartas em ordem"""
+        self.cartas = []
+        for n in ["Ouros", "Espadas", "Copas", "Paus"] :
+            for v in ["A"] + ["%2.2s"%str(c) for c in range(2,11)] + ["J","Q", "K"]:
+                self.cartas.append(Carta(n,v))
+                                    
+    def print(self):
+        for c in self.cartas :
+            print(c)
+    
+    def embaralha(self) :
+        emb = []
+        while len(self.cartas) > 0:
+            i = random.randint(0, len(self.cartas) - 1)
+            emb.append(self.cartas[i])
+            self.cartas.pop(i)
+        self.cartas = emb.copy()
+
+    def distribui(self, nj, ncartas) :
+        if nj * ncartas > len(self.cartas):
+            return None
+        mãos = [] * nj
+        for j in range(nj):
+            mãos.append([])
+
+        for i in range(ncartas) :
+            for j in range(nj):
+                mãos[j].append(self.cartas.pop())
+        return mãos
+        
+
+b = Baralho()
+b.embaralha()
+b.print()
+print("----" * 5)
+m = b.distribui(4,5)
+
+for i in range(len(m)) :
+    print("Cartas do jogador nº %d"%(i))
+    for j in range(len(m[i])) :
+        print(m[i][j])
+    print("----")
+    
+
+

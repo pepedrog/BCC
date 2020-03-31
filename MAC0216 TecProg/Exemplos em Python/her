@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+
+class A:
+    def __init__(s,v=423):
+        s.a = v
+
+    def __add__(s, o):
+        if type(o) == A:
+            return s.a*1000 +o.a
+        
+        if type(o) == list:
+            return s.a * len(o)
+
+    def __mul__(s, o):
+        return s.a * o.a
+    
+    def __str__(s):
+        return str(s.a)
+
+class B(A):
+    def __init__(s, v=42):
+        A.__init__(s,v)
+
+    def __add__(s, o):
+        return s.a + o.a/1000
+
+
+a1 = A(12)
+a2 = A(4)
+a3 = A()
+
+print("soma de A ", a1+a2)
+
+b1 = B(12)
+b2 = B(4)
+b3 = B()
+
+print("soma de B", b1+b2)
+
+print("mult de A", a1*a2)
+print("Mult de A", A.__mul__(a1,a2))
+print("mult de B", b1*b2)
+
+print("soma mistura", a1+b2)
+print("mistura soma", b2+a1)
+print("soma", a2+[2,3])
