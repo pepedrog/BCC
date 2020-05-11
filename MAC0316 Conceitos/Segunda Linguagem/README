@@ -1,0 +1,49 @@
+Pedro Gigeck Freire 10737136
+
+README
+Segundo Compilador
+
+Nossa linguagem implementada em racket está em linguagem.rkt
+Nosso compilador "pep" implementado em flex + bison está em pep.l e pep.l
+
+A linguagem foi uma adaptação do arquivo 16-Recursões.rkt usado em aula
+
+Por certa imperícia no uso do bison, ao compilar haverá alguns avisos, 
+que não comprometem o funcionamento do programa.
+
+Para compilar, digite use "make tudo"
+
+Nossa linguagem a sintaxe:
+	Para as operações aritméticas, usar a liguagem natural: 2 + 3
+	Para chamar funções, também: dobro(2)
+	Para usar o condicional use: se condição então expressão senão expressão
+	Para criar uma função faça: seja nome função(argumento) expressão faça expressão
+	Para criar uma variável faça: seja nome = valor faça expressão
+	Para modificar uma variével faça: nome <- valor
+
+Não faço uma revisão ortoxa da sintaxe, por favor siga ela :D
+
+Há exemplos da nossa linguagem na pasta Exemplos
+Para usar o compilador use:
+./pep < arquivo-exemplo
+Para compilar e executar o código gerado use 
+./pep < arquivo-exemplo | ./linguagem
+
+Executar os testes:
+Teste:							Comando:					Resultado
+./pep < Exemplos/ex-operadores1 | ./linguagem		2e-1 + 3					3.2
+./pep < Exemplos/ex-operadores2 | ./linguagem		(10*4) + ( 1+ 1)				42
+./pep < Exemplos/ex-operadores3 | ./linguagem		8 * (7 - 4*(5 - -3))				-200
+./pep < Exemplos/ex-divisao1 | ./linguagem		((3 + 1) / (2 - 0))				2
+./pep < Exemplos/ex-divisao2 | ./linguagem		(3 * 2) / (50 - 44) + 1				2
+./pep < Exemplos/ex-divisao3 | ./linguagem		5 / 0						Erro
+./pep < Exemplos/ex-condicional1 | ./linguagem		se(2 - 1) entao (5 + 2) senao (5 + 3)		7
+./pep < Exemplos/ex-condicional2 | ./linguagem		se (9 - 3*3) entao 5 senao (3-3)		0
+./pep < Exemplos/ex-condicional3 | ./linguagem		(3 + 2) + (se 2-2 entao 1 senao 2)		7
+./pep < Exemplos/ex-variavel1 | ./linguagem		seja x = 2 faça x <- x + 1			3
+./pep < Exemplos/ex-variavel2 | ./linguagem		seja x = 1 faça se x entao x <- x + x		2
+./pep < Exemplos/ex-seq1 | ./linguagem			(1 + 3 e 6)					6
+./pep < Exemplos/ex-seq2 | ./linguagem			seja x=2 faça((x <- x+1 e x <- x+3) e x < -x)	-6
+./pep < Exemplos/ex-funcoes1 | ./linguagem		define e faz dobro (3)				6
+./pep < Exemplos/ex-funcoes2 | ./linguagem		define e faz triplo(dobro(2))			12
+./pep < Exemplos/ex-funcoes3 | ./linguagem		define e faz fat (5)				120				

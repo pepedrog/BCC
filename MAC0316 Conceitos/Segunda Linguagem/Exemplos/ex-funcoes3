@@ -1,0 +1,5 @@
+seja fat funcao(n)
+	se n entao n <- n * fat (n - 1)
+	senao n <- 1
+	faça fat (5)
+

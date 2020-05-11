@@ -1,0 +1,3 @@
+#lang plai-typed
+(define (3x [x : number)) : number
+	(* 3 x))

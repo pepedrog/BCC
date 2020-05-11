@@ -1,0 +1,3 @@
+seja x = 1 faça
+	se x entao x <- x + x
+	senao x <- 8

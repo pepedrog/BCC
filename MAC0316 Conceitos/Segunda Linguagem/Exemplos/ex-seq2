@@ -1,0 +1,1 @@
+seja x = 2 faça ((x <- x + 1 e x <- x + 3) e x <- -x)

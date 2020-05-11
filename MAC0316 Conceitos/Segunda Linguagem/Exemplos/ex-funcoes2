@@ -1,0 +1,5 @@
+seja dobro funcao(x)
+	x <- 2 * x
+	faça seja triplo funcao(x)
+		x <- 3 * x
+		faça triplo(dobro(2))
