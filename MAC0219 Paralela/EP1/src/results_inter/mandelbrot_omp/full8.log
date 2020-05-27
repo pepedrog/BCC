@@ -1,0 +1,86 @@
+[kernel.kallsyms] with build id 7f8bd6eeb0ef492b560db70cd3d02872bf77ee1a not found, continuing without symbols
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 39K of event 'cycles:uppp'
+# Event count (approx.): 1901350060
+#
+# Overhead  Command         Shared Object       Symbol                          
+# ........  ..............  ..................  ................................
+#
+    41.48%  mandelbrot_omp  mandelbrot_omp      [.] compute_mandelbrot._omp_fn.0
+    25.38%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001c6c0
+    13.73%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001c858
+     4.17%  mandelbrot_omp  libc-2.27.so        [.] _IO_fwrite
+     3.47%  mandelbrot_omp  libc-2.27.so        [.] _int_malloc
+     3.30%  mandelbrot_omp  mandelbrot_omp      [.] update_rgb_buffer
+     1.60%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001c6c2
+     0.88%  mandelbrot_omp  libc-2.27.so        [.] malloc
+     0.85%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001c85a
+     0.71%  mandelbrot_omp  mandelbrot_omp      [.] allocate_image_buffer
+     0.66%  mandelbrot_omp  libc-2.27.so        [.] _IO_file_xsputn@@GLIBC_2.2.5
+     0.52%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001c6c6
+     0.48%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001c6cb
+     0.46%  mandelbrot_omp  [kernel]            [k] 0xffffffff822009e7
+     0.42%  mandelbrot_omp  mandelbrot_omp      [.] write_to_file
+     0.41%  mandelbrot_omp  libc-2.27.so        [.] __memmove_avx_unaligned_erms
+     0.35%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001c863
+     0.29%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001c6cf
+     0.27%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001c85e
+     0.19%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001c868
+     0.10%  mandelbrot_omp  libc-2.27.so        [.] @plt
+     0.09%  mandelbrot_omp  mandelbrot_omp      [.] fwrite@plt
+     0.07%  mandelbrot_omp  libc-2.27.so        [.] __mempcpy_avx_unaligned_erms
+     0.06%  mandelbrot_omp  mandelbrot_omp      [.] malloc@plt
+     0.01%  mandelbrot_omp  ld-2.27.so          [.] do_lookup_x
+     0.01%  mandelbrot_omp  libc-2.27.so        [.] _IO_do_write@@GLIBC_2.2.5
+     0.00%  mandelbrot_omp  libc-2.27.so        [.] _IO_default_xsputn
+     0.00%  mandelbrot_omp  libc-2.27.so        [.] _dl_addr
+     0.00%  mandelbrot_omp  libc-2.27.so        [.] __brk
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] strcmp
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] _dl_fini
+     0.00%  mandelbrot_omp  libc-2.27.so        [.] __GI___libc_write
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] _dl_allocate_tls
+     0.00%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x0000000000019ea0
+     0.00%  mandelbrot_omp  libc-2.27.so        [.] getenv
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] __GI___tunables_init
+     0.00%  mandelbrot_omp  libc-2.27.so        [.] __GI_____strtod_l_internal
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] _dl_get_tls_static_info
+     0.00%  mandelbrot_omp  libc-2.27.so        [.] init_cacheinfo
+     0.00%  mandelbrot_omp  libc-2.27.so        [.] malloc_hook_ini
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] _dl_init_paths
+     0.00%  mandelbrot_omp  libc-2.27.so        [.] vfprintf
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] _dl_map_object_from_fd
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] calloc
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] _dl_map_object
+     0.00%  mandelbrot_omp  libc-2.27.so        [.] __GI___libc_open
+     0.00%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x0000000000019d30
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] _dl_load_cache_lookup
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] malloc@plt
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] memset
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] _dl_cache_libcmp
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] _dl_start
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] _dl_map_object_deps
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] _dl_debug_initialize
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] _dl_fixup
+     0.00%  mandelbrot_omp  libpthread-2.27.so  [.] start_thread
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] _dl_sysdep_start
+     0.00%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001c6a0
+     0.00%  mandelbrot_omp  libpthread-2.27.so  [.] __ctype_init@plt
+     0.00%  mandelbrot_omp  libc-2.27.so        [.] __clone
+     0.00%  mandelbrot_omp  mandelbrot_omp      [.] compute_mandelbrot
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] open_verify.constprop.7
+     0.00%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x0000000000019d56
+     0.00%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001b359
+     0.00%  mandelbrot_omp  libc-2.27.so        [.] _setjmp
+     0.00%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001c87c
+     0.00%  mandelbrot_omp  libgomp.so.1.0.0    [.] 0x000000000001c8a0
+     0.00%  mandelbrot_omp  ld-2.27.so          [.] read
+     0.00%  mandelbrot_omp  [kernel]            [k] 0xffffffff82200158
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

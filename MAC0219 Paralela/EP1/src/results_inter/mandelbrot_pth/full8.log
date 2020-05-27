@@ -1,0 +1,68 @@
+[kernel.kallsyms] with build id 7f8bd6eeb0ef492b560db70cd3d02872bf77ee1a not found, continuing without symbols
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 22K of event 'cycles:uppp'
+# Event count (approx.): 1062618483
+#
+# Overhead  Command         Shared Object       Symbol                            
+# ........  ..............  ..................  ..................................
+#
+    72.97%  mandelbrot_pth  mandelbrot_pth      [.] compute_mandelbrot_pth
+     7.53%  mandelbrot_pth  libc-2.27.so        [.] _IO_fwrite
+     6.53%  mandelbrot_pth  libc-2.27.so        [.] _int_malloc
+     5.32%  mandelbrot_pth  mandelbrot_pth      [.] update_rgb_buffer
+     1.92%  mandelbrot_pth  libc-2.27.so        [.] malloc
+     1.63%  mandelbrot_pth  mandelbrot_pth      [.] allocate_image_buffer
+     1.14%  mandelbrot_pth  libc-2.27.so        [.] _IO_file_xsputn@@GLIBC_2.2.5
+     0.94%  mandelbrot_pth  [kernel]            [k] 0xffffffff822009e7
+     0.71%  mandelbrot_pth  libc-2.27.so        [.] __memmove_avx_unaligned_erms
+     0.65%  mandelbrot_pth  mandelbrot_pth      [.] write_to_file
+     0.17%  mandelbrot_pth  libc-2.27.so        [.] __mempcpy_avx_unaligned_erms
+     0.15%  mandelbrot_pth  mandelbrot_pth      [.] fwrite@plt
+     0.13%  mandelbrot_pth  libc-2.27.so        [.] @plt
+     0.10%  mandelbrot_pth  mandelbrot_pth      [.] malloc@plt
+     0.01%  mandelbrot_pth  libc-2.27.so        [.] _dl_addr
+     0.01%  mandelbrot_pth  libc-2.27.so        [.] sysmalloc
+     0.01%  mandelbrot_pth  libc-2.27.so        [.] __libc_disable_asynccancel
+     0.01%  mandelbrot_pth  ld-2.27.so          [.] strcmp
+     0.01%  mandelbrot_pth  ld-2.27.so          [.] _dl_lookup_symbol_x
+     0.00%  mandelbrot_pth  libc-2.27.so        [.] _IO_file_overflow@@GLIBC_2.2.5
+     0.00%  mandelbrot_pth  [kernel]            [k] 0xffffffff82200158
+     0.00%  mandelbrot_pth  libc-2.27.so        [.] __GI___libc_write
+     0.00%  mandelbrot_pth  libc-2.27.so        [.] _IO_default_xsputn
+     0.00%  mandelbrot_pth  libc-2.27.so        [.] _IO_do_write@@GLIBC_2.2.5
+     0.00%  mandelbrot_pth  ld-2.27.so          [.] do_lookup_x
+     0.00%  mandelbrot_pth  ld-2.27.so          [.] _dl_relocate_object
+     0.00%  mandelbrot_pth  libc-2.27.so        [.] __libc_pthread_init
+     0.00%  mandelbrot_pth  ld-2.27.so          [.] _dl_load_cache_lookup
+     0.00%  mandelbrot_pth  libc-2.27.so        [.] __GI_____strtod_l_internal
+     0.00%  mandelbrot_pth  libc-2.27.so        [.] __cxa_atexit
+     0.00%  mandelbrot_pth  ld-2.27.so          [.] _dl_setup_hash
+     0.00%  mandelbrot_pth  ld-2.27.so          [.] __GI___tunables_init
+     0.00%  mandelbrot_pth  ld-2.27.so          [.] strchr
+     0.00%  mandelbrot_pth  ld-2.27.so          [.] _dl_check_map_versions
+     0.00%  mandelbrot_pth  ld-2.27.so          [.] get_common_indeces.constprop.1
+     0.00%  mandelbrot_pth  libc-2.27.so        [.] _IO_doallocbuf
+     0.00%  mandelbrot_pth  libpthread-2.27.so  [.] __free_tcb
+     0.00%  mandelbrot_pth  ld-2.27.so          [.] _dl_fixup
+     0.00%  mandelbrot_pth  libc-2.27.so        [.] __GI___libc_open
+     0.00%  mandelbrot_pth  libc-2.27.so        [.] __munmap
+     0.00%  mandelbrot_pth  ld-2.27.so          [.] _dl_deallocate_tls
+     0.00%  mandelbrot_pth  ld-2.27.so          [.] _dl_runtime_resolve_xsavec
+     0.00%  mandelbrot_pth  libpthread-2.27.so  [.] start_thread
+     0.00%  mandelbrot_pth  ld-2.27.so          [.] _dl_start
+     0.00%  mandelbrot_pth  libc-2.27.so        [.] __clone
+     0.00%  mandelbrot_pth  libc-2.27.so        [.] _setjmp
+     0.00%  mandelbrot_pth  libpthread-2.27.so  [.] _pthread_cleanup_push
+     0.00%  mandelbrot_pth  libpthread-2.27.so  [.] __GI___pthread_timedjoin_ex
+     0.00%  mandelbrot_pth  libc-2.27.so        [.] __ctype_init
+     0.00%  mandelbrot_pth  ld-2.27.so          [.] _start
+     0.00%  mandelbrot_pth  [unknown]           [.] 0000000000000000
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#
