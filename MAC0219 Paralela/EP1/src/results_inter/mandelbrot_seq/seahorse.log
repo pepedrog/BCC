@@ -1,0 +1,49 @@
+[kernel.kallsyms] with build id 7f8bd6eeb0ef492b560db70cd3d02872bf77ee1a not found, continuing without symbols
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 103K of event 'cycles:uppp'
+# Event count (approx.): 5281505894
+#
+# Overhead  Command         Shared Object     Symbol                            
+# ........  ..............  ................  ..................................
+#
+    95.88%  mandelbrot_seq  mandelbrot_seq    [.] compute_mandelbrot
+     1.06%  mandelbrot_seq  libc-2.27.so      [.] _int_malloc
+     0.78%  mandelbrot_seq  mandelbrot_seq    [.] update_rgb_buffer
+     0.64%  mandelbrot_seq  libc-2.27.so      [.] _IO_fwrite
+     0.32%  mandelbrot_seq  mandelbrot_seq    [.] allocate_image_buffer
+     0.31%  mandelbrot_seq  libc-2.27.so      [.] malloc
+     0.31%  mandelbrot_seq  mandelbrot_seq    [.] write_to_file
+     0.28%  mandelbrot_seq  libc-2.27.so      [.] _IO_file_xsputn@@GLIBC_2.2.5
+     0.18%  mandelbrot_seq  [kernel]          [k] 0xffffffff822009e7
+     0.14%  mandelbrot_seq  libc-2.27.so      [.] __memmove_avx_unaligned_erms
+     0.04%  mandelbrot_seq  libc-2.27.so      [.] __mempcpy_avx_unaligned_erms
+     0.02%  mandelbrot_seq  libc-2.27.so      [.] @plt
+     0.02%  mandelbrot_seq  mandelbrot_seq    [.] fwrite@plt
+     0.02%  mandelbrot_seq  mandelbrot_seq    [.] malloc@plt
+     0.00%  mandelbrot_seq  libc-2.27.so      [.] _dl_addr
+     0.00%  mandelbrot_seq  libc-2.27.so      [.] sysmalloc
+     0.00%  mandelbrot_seq  [kernel]          [k] 0xffffffff82200158
+     0.00%  mandelbrot_seq  libc-2.27.so      [.] _IO_default_xsputn
+     0.00%  mandelbrot_seq  mandelbrot_seq    [.] clock@plt
+     0.00%  mandelbrot_seq  ld-2.27.so        [.] _dl_relocate_object
+     0.00%  mandelbrot_seq  ld-2.27.so        [.] do_lookup_x
+     0.00%  mandelbrot_seq  libc-2.27.so      [.] intel_check_word.isra.0
+     0.00%  mandelbrot_seq  libc-2.27.so      [.] round_and_return
+     0.00%  mandelbrot_seq  ld-2.27.so        [.] _dl_lookup_symbol_x
+     0.00%  mandelbrot_seq  ld-2.27.so        [.] _dl_load_cache_lookup
+     0.00%  mandelbrot_seq  ld-2.27.so        [.] _dl_check_map_versions
+     0.00%  mandelbrot_seq  ld-2.27.so        [.] _dl_init_paths
+     0.00%  mandelbrot_seq  ld-2.27.so        [.] strcmp
+     0.00%  mandelbrot_seq  ld-2.27.so        [.] __GI___tunables_init
+     0.00%  mandelbrot_seq  ld-2.27.so        [.] get_common_indeces.constprop.1
+     0.00%  mandelbrot_seq  ld-2.27.so        [.] _dl_start
+     0.00%  mandelbrot_seq  ld-2.27.so        [.] _start
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#
