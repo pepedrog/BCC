@@ -100,23 +100,20 @@ class BlackjackMDP(util.MDP):
         for cards in deck: total_cards += cards
     
         # Process each possible action
-        if action == 'Pegar': 
+        if action == 'Pegar':
+            reward = 0
             if peek != None:
                 # If I peeked, the action is deterministic 
                 prob_card = 1
                 total += self.valores_cartas[peek]
                 
-                if total > self.limiar:
+                if total > self.limiar or total_cards == 1: 
+                    # BUST! or game over
                     deck = None
-                    reward = 0
                 else:
                     deck = list (deck)
                     deck[peek] -= 1
                     deck = tuple (deck)
-                    reward = total
-                
-                # If its the last card the game is over
-                if total_cards == 1: deck = None
                 
                 new_states = [((total, None, deck), prob_card, reward)]
                 
@@ -126,19 +123,13 @@ class BlackjackMDP(util.MDP):
                     new_total = total + self.valores_cartas[card]
                     prob_card = deck[card] / total_cards
         
-                    if new_total > self.limiar: 
-                        # BUST!
+                    if new_total > self.limiar or total_cards == 1: 
+                        # BUST! or game over
                         new_deck = None
-                        reward = 0
                     else:
                         new_deck = list (deck)
                         new_deck[card] -= 1
                         new_deck = tuple (new_deck)
-                        reward = new_total
-                    
-                    # If its the last card the game is over
-                    if total_cards == 1: new_deck = None
-                    # (I know this 'if' is running many times, but its a silmple way)
                     
                     if prob_card > 0:
                         new_states.append (((new_total, None, new_deck), prob_card, reward))
@@ -147,7 +138,7 @@ class BlackjackMDP(util.MDP):
             if peek != None:
                 # Forbidden double peeking
                 return []
-            reward = total - self.custo_espiada
+            reward = - self.custo_espiada
             # Add a new state for each possible card
             for card in range (len (deck)):
                 prob_card = deck[card] / total_cards
@@ -188,8 +179,6 @@ class ValueIteration(util.MDPAlgorithm):
         mdp.computeStates()
         def computeQ(mdp, V, state, action):
             # Return Q(state, action) based on V(state).
-            for reward in mdp.succAndProbReward(state, action):
-                  print("reward do " + str(reward[0]) + " é " + str(reward[2])) 
             return sum(prob * (reward + mdp.discount() * V[newState]) \
                             for newState, prob, reward in mdp.succAndProbReward(state, action))
 
@@ -208,17 +197,15 @@ class ValueIteration(util.MDPAlgorithm):
         for state in mdp.states:
             V[state] = 0
             
+        # Initialize matrix of Rewards
         gamma = mdp.discount()
         delta = float('inf')
         
         while (delta > epsilon*((1-gamma)/gamma)):
-            print("Nova iteração, delta é " + str(delta))
+            partial_delta = 0
             for state in mdp.states:
-                partial_delta = 0
-                
                 old_v = V[state]
                 V[state] = max (computeQ(mdp, V, state, action) for action in mdp.actions (state))
-                print("V[" + str(state) + "] = " + str(V[state]))
                 partial_delta = max (partial_delta, abs(old_v - V[state]))
             delta = min(partial_delta, delta)
         # END_YOUR_CODE
@@ -229,33 +216,35 @@ class ValueIteration(util.MDPAlgorithm):
         self.pi = pi
         self.V = V
 
-MDP1 = BlackjackMDP(valores_cartas=[1], multiplicidade=3, limiar=10, custo_espiada=1)
-
-solver = ValueIteration()
-solver.solve (MDP1)
-for state in MDP1.states:
-    if (state[2] == None):
-        print("ACABOU, Tenho " + str(state[0]))
-    else:
-        print("Tenho " + str(state[0]) + ", Espiei " + str(state[1]) + ", Devo " + str(solver.pi[state]))
-
-"""
 # First MDP
 MDP1 = BlackjackMDP(valores_cartas=[1, 5], multiplicidade=2, limiar=10, custo_espiada=1)
 
 solver = ValueIteration()
 solver.solve (MDP1)
 for state in MDP1.states:
-    print("Tenho " + str(state[0]) + ", Espiei " + str(state[1]) + ", Devo " + str(solver.pi[state]))
-
+    if (state[2] != None):
+        print("Tenho " + str(state[0]) + ", Espiei " + str(state[1]) + ", Devo " + str(solver.pi[state]))
+print("---------------------")
 # Second MDP
 MDP2 = BlackjackMDP(valores_cartas=[1, 5], multiplicidade=2, limiar=15, custo_espiada=1)
 
 solver = ValueIteration()
 solver.solve (MDP2)
 for state in MDP2.states:
-    print("Tenho " + str(state[0]) + ", Espiei " + str(state[1]) + ", Devo " + str(solver.pi[state]))
-"""
+    if (state[2] != None):
+        print("Tenho " + str(state[0]) + ", Espiei " + str(state[1]) + ", Devo " + str(solver.pi[state]))
+print("---------------------")
+
+# Second MDP
+MDP2 = BlackjackMDP(valores_cartas=[4, 5], multiplicidade=6, limiar=9, custo_espiada=1)
+
+solver = ValueIteration()
+solver.solve (MDP2)
+for state in MDP2.states:
+    if (state[2] != None):
+        print("Tenho " + str(state[0]) + ", Espiei " + str(state[1]) + ", Devo " + str(solver.pi[state]))
+print("---------------------")
+
 
 def geraMDPxereta():
     """
