@@ -70,14 +70,6 @@ class NumberLineMDP(MDP):
                 (min(max(state + action, -self.n), +self.n), 0.6, state)]
     def discount(self): return 0.9
 
-
-
-
-
-
-
-
-
 class RLAlgorithm:
     """
      Abstract class: an RLAlgorithm performs reinforcement learning.  All it needs

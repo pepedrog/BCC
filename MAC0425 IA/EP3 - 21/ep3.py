@@ -87,7 +87,77 @@ class BlackjackMDP(util.MDP):
            don't include that state in the list returned by succAndProbReward.
         """
         # BEGIN_YOUR_CODE
-        raise Exception("Not implemented yet")
+        new_states = []
+        total = state[0]
+        peek  = state[1]
+        deck  = state[2]
+        
+        # end state
+        if deck == None: return []
+        
+        # total of cards in the deck (to calculate probability)
+        total_cards = 0
+        for cards in deck: total_cards += cards
+    
+        # Process each possible action
+        if action == 'Pegar': 
+            if peek != None:
+                # If I peeked, the action is deterministic 
+                prob_card = 1
+                total += self.valores_cartas[peek]
+                
+                if total > self.limiar:
+                    deck = None
+                    reward = 0
+                else:
+                    deck = list (deck)
+                    deck[peek] -= 1
+                    deck = tuple (deck)
+                    reward = total
+                
+                # If its the last card the game is over
+                if total_cards == 1: deck = None
+                
+                new_states = [((total, None, deck), prob_card, reward)]
+                
+            else:
+                # Add a new state for each possible card
+                for card in range (len (deck)):
+                    new_total = total + self.valores_cartas[card]
+                    prob_card = deck[card] / total_cards
+        
+                    if new_total > self.limiar: 
+                        # BUST!
+                        new_deck = None
+                        reward = 0
+                    else:
+                        new_deck = list (deck)
+                        new_deck[card] -= 1
+                        new_deck = tuple (new_deck)
+                        reward = new_total
+                    
+                    # If its the last card the game is over
+                    if total_cards == 1: new_deck = None
+                    # (I know this 'if' is running many times, but its a silmple way)
+                    
+                    if prob_card > 0:
+                        new_states.append (((new_total, None, new_deck), prob_card, reward))
+        
+        elif action == 'Espiar':
+            if peek != None:
+                # Forbidden double peeking
+                return []
+            reward = total - self.custo_espiada
+            # Add a new state for each possible card
+            for card in range (len (deck)):
+                prob_card = deck[card] / total_cards
+                if prob_card > 0:
+                    new_states.append(((total, card, deck), prob_card, reward))
+                    
+        else:
+            new_states = [((total, None, None), 1, total)]
+            
+        return new_states
         # END_YOUR_CODE
 
     def discount(self):
@@ -118,6 +188,8 @@ class ValueIteration(util.MDPAlgorithm):
         mdp.computeStates()
         def computeQ(mdp, V, state, action):
             # Return Q(state, action) based on V(state).
+            for reward in mdp.succAndProbReward(state, action):
+                  print("reward do " + str(reward[0]) + " é " + str(reward[2])) 
             return sum(prob * (reward + mdp.discount() * V[newState]) \
                             for newState, prob, reward in mdp.succAndProbReward(state, action))
 
@@ -127,10 +199,28 @@ class ValueIteration(util.MDPAlgorithm):
             for state in mdp.states:
                 pi[state] = max((computeQ(mdp, V, state, action), action) for action in mdp.actions(state))[1]
             return pi
+        
         V = defaultdict(float)  # state -> value of state
+        
         # Implement the main loop of Asynchronous Value Iteration Here:
         # BEGIN_YOUR_CODE
-        raise Exception("Not implemented yet")
+        # Initialize V
+        for state in mdp.states:
+            V[state] = 0
+            
+        gamma = mdp.discount()
+        delta = float('inf')
+        
+        while (delta > epsilon*((1-gamma)/gamma)):
+            print("Nova iteração, delta é " + str(delta))
+            for state in mdp.states:
+                partial_delta = 0
+                
+                old_v = V[state]
+                V[state] = max (computeQ(mdp, V, state, action) for action in mdp.actions (state))
+                print("V[" + str(state) + "] = " + str(V[state]))
+                partial_delta = max (partial_delta, abs(old_v - V[state]))
+            delta = min(partial_delta, delta)
         # END_YOUR_CODE
 
         # Extract the optimal policy now
@@ -139,11 +229,33 @@ class ValueIteration(util.MDPAlgorithm):
         self.pi = pi
         self.V = V
 
+MDP1 = BlackjackMDP(valores_cartas=[1], multiplicidade=3, limiar=10, custo_espiada=1)
+
+solver = ValueIteration()
+solver.solve (MDP1)
+for state in MDP1.states:
+    if (state[2] == None):
+        print("ACABOU, Tenho " + str(state[0]))
+    else:
+        print("Tenho " + str(state[0]) + ", Espiei " + str(state[1]) + ", Devo " + str(solver.pi[state]))
+
+"""
 # First MDP
 MDP1 = BlackjackMDP(valores_cartas=[1, 5], multiplicidade=2, limiar=10, custo_espiada=1)
 
+solver = ValueIteration()
+solver.solve (MDP1)
+for state in MDP1.states:
+    print("Tenho " + str(state[0]) + ", Espiei " + str(state[1]) + ", Devo " + str(solver.pi[state]))
+
 # Second MDP
 MDP2 = BlackjackMDP(valores_cartas=[1, 5], multiplicidade=2, limiar=15, custo_espiada=1)
+
+solver = ValueIteration()
+solver.solve (MDP2)
+for state in MDP2.states:
+    print("Tenho " + str(state[0]) + ", Espiei " + str(state[1]) + ", Devo " + str(solver.pi[state]))
+"""
 
 def geraMDPxereta():
     """
