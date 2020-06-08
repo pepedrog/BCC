@@ -13,8 +13,8 @@
   ENTENDO QUE EPS SEM ASSINATURA NAO SERAO CORRIGIDOS E,
   AINDA ASSIM, PODERAO SER PUNIDOS POR DESONESTIDADE ACADEMICA.
 
-  Nome :
-  NUSP :
+  Nome : Pedro Gigeck Freire
+  NUSP : 10737136
 
   Referencias: Com excecao das rotinas fornecidas no enunciado
   e em sala de aula, caso voce tenha utilizado alguma referencia,
@@ -32,6 +32,7 @@ import random
 from collections import defaultdict
 import util
 
+import time
 
 # **********************************************************
 # **            PART 01 Modeling BlackJack                **
@@ -91,14 +92,11 @@ class BlackjackMDP(util.MDP):
         total = state[0]
         peek = state[1]
         deck = state[2]
-        
         # end state
         if deck is None: return []
-        
         # total of cards in the deck (to calculate probability)
         total_cards = 0
         for cards in deck: total_cards += cards
-    
         # Process each possible action
         if action == 'Pegar':
             reward = 0
@@ -106,7 +104,6 @@ class BlackjackMDP(util.MDP):
                 # If I peeked, the action is deterministic 
                 prob_card = 1
                 total += self.valores_cartas[peek]
-                
                 if total > self.limiar: 
                     # BUST!
                     deck = None
@@ -118,15 +115,12 @@ class BlackjackMDP(util.MDP):
                     # Last card
                     reward = total
                     deck = None
-                    
                 new_states = [((total, None, deck), prob_card, reward)]
-        
             else:
                 # Add a new state for each possible card
                 for card in range(len(deck)):
                     new_total = total + self.valores_cartas[card]
                     prob_card = deck[card] / total_cards
-        
                     if new_total > self.limiar: 
                         # BUST! or game over
                         new_deck = None
@@ -138,9 +132,8 @@ class BlackjackMDP(util.MDP):
                         # Last card
                         reward = new_total
                         new_deck = None
-                    
                     if prob_card > 0:
-                        new_states.append (((new_total, None, new_deck), prob_card, reward))
+                        new_states.append(((new_total, None, new_deck), prob_card, reward))
         
         elif action == 'Espiar':
             if peek is not None:
@@ -152,7 +145,6 @@ class BlackjackMDP(util.MDP):
                 prob_card = deck[card] / total_cards
                 if prob_card > 0:
                     new_states.append(((total, card, deck), prob_card, reward))
-                    
         else:
             new_states = [((total, None, None), 1, total)]
             
@@ -212,8 +204,8 @@ class ValueIteration(util.MDPAlgorithm):
             partial_delta = 0
             for state in mdp.states:
                 old_v = V[state]
-                V[state] = max( computeQ(mdp, V, state, action) for action in mdp.actions(state))
-                partial_delta = max( partial_delta, abs(old_v - V[state]))
+                V[state] = max(computeQ(mdp, V, state, action) for action in mdp.actions(state))
+                partial_delta = max(partial_delta, abs(old_v - V[state]))
             delta = min(partial_delta, delta)
         # END_YOUR_CODE
 
@@ -227,22 +219,12 @@ DEBUG = False
 
 # First MDP
 MDP1 = BlackjackMDP(valores_cartas=[1, 5], multiplicidade=2, limiar=10, custo_espiada=1)
-solver = ValueIteration()
-solver.solve(MDP1)
-
-if DEBUG:
-    for state in MDP1.states:
-        if state[2] is not None:
-            print("Tenho " + str(state[0]) + ", Espiei " + str(state[1]) + 
-                  ", Devo " + str(solver.pi[state]))
-    print("---------------------")
-
 # Second MDP
 MDP2 = BlackjackMDP(valores_cartas=[1, 5], multiplicidade=2, limiar=15, custo_espiada=1)
-solver = ValueIteration()
-solver.solve(MDP2)
 
 if DEBUG:
+    solver = ValueIteration()
+    solver.solve(MDP2)
     for state in MDP1.states:
         if state[2] is not None:
             print("Tenho " + str(state[0]) + ", Espiei " + str(state[1]) + 
@@ -255,9 +237,20 @@ def geraMDPxereta():
     optimal action for at least 10% of the states.
     """
     # BEGIN_YOUR_CODE
-    raise Exception("Not implemented yet")
+    return BlackjackMDP(valores_cartas=[5, 20], multiplicidade=4, limiar=20, custo_espiada=1)
     # END_YOUR_CODE
-
+"""
+    vi = ValueIteration()
+    vi.solve(teste)
+    espiadas = 0
+    for state in teste.states:
+        if state[2] is not None:
+            print("Tenho " + str(state[0]) + ", Espiei " + str(state[1]) + 
+                  ", Devo " + str(vi.pi[state]))
+        if vi.pi[state] == 'Espiar':
+            espiadas += 1
+    print("total = " + str(espiadas/len(teste.states)))
+    print("---------------------")"""
 
 # **********************************************************
 # **                    PART 03 Q-Learning                **
@@ -315,7 +308,14 @@ class QLearningAlgorithm(util.RLAlgorithm):
          HINT: Remember to check if s is a terminal state and s' None.
         """
         # BEGIN_YOUR_CODE
-        raise Exception("Not implemented yet")
+        alpha = self.getStepSize()
+        if newState is None:
+            V = 0
+        else:
+            V = max(self.getQ(newState, a) for a in self.actions(newState))
+        # update each weight
+        for f, v in self.featureExtractor(state, action):
+            self.weights[f] += alpha*(reward + self.discount*V - self.getQ(state, action))*v
         # END_YOUR_CODE
 
 def identityFeatureExtractor(state, action):
@@ -342,3 +342,78 @@ def blackjackFeatureExtractor(state, action):
     # BEGIN_YOUR_CODE
     raise Exception("Not implemented yet")
     # END_YOUR_CODE
+
+# **********************************************************
+# **                     SIMULATIONS                      **
+# **********************************************************
+
+# Funtion to simulate the ValueIteraction Algorithm
+def simulateVI(mdp, vi, numTrials=10, maxIterations=1000):
+    """
+     Perform |numTrials| of the following:
+     On each trial, take the MDP |mdp| and an RLAlgorithm |rl| and simulates the
+     RL algorithm according to the dynamics of the MDP.
+     Each trial will run for at most |maxIterations|.
+     Return the list of rewards that we get for each trial.
+    """
+    def sample(probs):
+        """Return i in [0, ..., len(probs)-1] with probability probs[i]."""
+        target = random.random()
+        accum = 0
+        for i, prob in enumerate(probs):
+            accum += prob
+            if accum >= target: return i
+        raise Exception("Invalid probs: %s" % probs)
+
+    totalRewards = []  # The rewards we get on each trial
+    for trial in range(numTrials):
+        state = mdp.startState()
+        sequence = [state]
+        totalDiscount = 1
+        totalReward = 0
+        for _ in range(maxIterations):
+            action = vi.pi[state]
+            transitions = mdp.succAndProbReward(state, action)
+            if len(transitions) == 0:
+                break
+
+            # Choose a random transition
+            i = sample([prob for newState, prob, reward in transitions])
+            newState, prob, reward = transitions[i]
+
+            totalReward += totalDiscount * reward
+            totalDiscount *= mdp.discount()
+            state = newState
+        totalRewards.append(totalReward)
+    return totalRewards
+
+def print_algorithms_compare(mdp, episodes):
+    t_vi = time.time()
+    vi = ValueIteration()
+    vi.solve(mdp)
+    rewards_vi = sum(simulateVI(mdp, vi, episodes))
+    t_vi = time.time() - t_vi
+    # QL training
+    t_ql_tr = time.time()
+    ql = QLearningAlgorithm(mdp.actions, mdp.discount(), identityFeatureExtractor)
+    rewards_ql_training = sum(util.simulate(mdp, ql, episodes))
+    t_ql_tr = time.time() - t_ql_tr
+    # QL simulation
+    t_ql = time.time()
+    ql.explorationProb = 0
+    rewards_ql = sum(util.simulate(mdp, ql, episodes))
+    t_ql = time.time() - t_ql
+    print("")
+    print("Average reward with VI             | %.4f | %.4f " % (rewards_vi/episodes, t_vi))
+    print("Average reward with QL (training)  | %.4f | %.4f " % (rewards_ql_training/episodes, t_ql_tr))
+    print("Average reward with QL             | %.4f | %.4f " % (rewards_ql/episodes, t_ql))
+
+print_algorithms_compare (MDP1, 30000)
+print_algorithms_compare (MDP2, 30000)
+print_algorithms_compare (geraMDPxereta(), 30000)
+print_algorithms_compare (largeMDP, 30000)
+
+teste = BlackjackMDP(valores_cartas=[8, 10, 30], multiplicidade=3, limiar=1000, custo_espiada=1)
+print_algorithms_compare(teste, 30000)
+        
+

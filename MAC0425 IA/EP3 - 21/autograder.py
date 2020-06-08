@@ -35,7 +35,6 @@ except Exception as e:
 TOLERANCE = 0.0001
 MAX_TESTS = 50
 
-
 class Timeout():
     """Timeout class using ALARM signal."""
     class Timeout(Exception):
@@ -433,5 +432,5 @@ def run_tests():
 if __name__ == "__main__":
     FILE_ABSOLUTE_PATH = os.path.abspath(__file__)
     TEST_DIR = os.path.dirname(FILE_ABSOLUTE_PATH)
-
     run_tests()
+    
