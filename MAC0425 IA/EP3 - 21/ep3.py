@@ -32,8 +32,6 @@ import random
 from collections import defaultdict
 import util
 
-import time
-
 # **********************************************************
 # **            PART 01 Modeling BlackJack                **
 # **********************************************************
@@ -309,13 +307,20 @@ class QLearningAlgorithm(util.RLAlgorithm):
         """
         # BEGIN_YOUR_CODE
         alpha = self.getStepSize()
+        q = self.getQ(state, action)
         if newState is None:
-            V = 0
+            V = q
         else:
             V = max(self.getQ(newState, a) for a in self.actions(newState))
-        # update each weight
+        # calculate each weight based on the actual weights
+        weights_update = defaultdict(float)
         for f, v in self.featureExtractor(state, action):
-            self.weights[f] += alpha*(reward + self.discount*V - self.getQ(state, action))*v
+            weights_update[f] = self.weights[f] + alpha*(reward + self.discount*V - q)*v
+        # after calculating the new values, update syncronsynchronously
+        for f, _ in self.featureExtractor(state, action):
+            self.weights[f] = weights_update[f]
+        #print("recebi " + str(state) + str(action) + str(reward) + str(newState))
+        #print(self.weights)
         # END_YOUR_CODE
 
 def identityFeatureExtractor(state, action):
@@ -340,9 +345,62 @@ def blackjackFeatureExtractor(state, action):
     (See identityFeatureExtractor() above for a simple example.)
     """
     # BEGIN_YOUR_CODE
-    raise Exception("Not implemented yet")
+    # Feature 1, 2 = Cards Left, Cards in Hand (extimate)
+    # Feature 1 = estimative of points in the deck
+    cards_left = 0
+    cards_hand = 0
+    max_cards = 0
+    if state[2] is not None:
+        for c in state[2]:
+            max_cards = max(max_cards, c)
+            cards_left += c
+        cards_hand = max_cards*len(state[2]) - cards_left
+    return [((state[0], action), 1)]
+    
     # END_YOUR_CODE
 
+def blackjackFeatureExtractor3(state, action):
+    """
+    You should return a list of (feature key, feature value) pairs.
+    (See identityFeatureExtractor() above for a simple example.)
+    """
+    # BEGIN_YOUR_CODE
+    # Feature 1, 2 = Cards Left, Cards in Hand (extimate)
+    # Feature 1 = estimative of points in the deck
+    cards_left = 0
+    cards_hand = 0
+    max_cards = 0
+    if state[2] is not None:
+        for c in state[2]:
+            max_cards = max(max_cards, c)
+            cards_left += c
+        cards_hand = max_cards*len(state[2]) - cards_left
+    return [("cards_left", cards_left), ("cands_hand", cards_hand), ((state[0], action), 1)]
+    
+    # END_YOUR_CODE
+def blackjackFeatureExtractor2(state, action):
+    """
+    You should return a list of (feature key, feature value) pairs.
+    (See identityFeatureExtractor() above for a simple example.)
+    """
+    # BEGIN_YOUR_CODE
+    # Feature 1, 2 = Cards Left, Cards in Hand (extimate)
+    cards_left = 0
+    cards_hand = 0
+    max_cards = 0
+    if state[2] is not None:
+        for c in state[2]:
+            max_cards = max(max_cards, c)
+            cards_left += c
+        cards_hand = max_cards*len(state[2]) - cards_left
+    f1 = ("cards_left", cards_left)
+    f2 = ("cards_hand", cards_hand)
+    # Feature 3 = action identifiers
+    f3 = (action, 1)
+    # Feature 4 = my total
+    f4 = ("total", state[0])
+    return [f1, f2, f3, f4]
+    # END_YOUR_CODE
 # **********************************************************
 # **                     SIMULATIONS                      **
 # **********************************************************
@@ -387,33 +445,51 @@ def simulateVI(mdp, vi, numTrials=10, maxIterations=1000):
         totalRewards.append(totalReward)
     return totalRewards
 
-def print_algorithms_compare(mdp, episodes):
-    t_vi = time.time()
+def print_algorithms_compare(mdp, ql, episodes):
     vi = ValueIteration()
     vi.solve(mdp)
     rewards_vi = sum(simulateVI(mdp, vi, episodes))
-    t_vi = time.time() - t_vi
-    # QL training
-    t_ql_tr = time.time()
-    ql = QLearningAlgorithm(mdp.actions, mdp.discount(), identityFeatureExtractor)
-    rewards_ql_training = sum(util.simulate(mdp, ql, episodes))
-    t_ql_tr = time.time() - t_ql_tr
-    # QL simulation
-    t_ql = time.time()
-    ql.explorationProb = 0
     rewards_ql = sum(util.simulate(mdp, ql, episodes))
-    t_ql = time.time() - t_ql
-    print("")
-    print("Average reward with VI             | %.4f | %.4f " % (rewards_vi/episodes, t_vi))
-    print("Average reward with QL (training)  | %.4f | %.4f " % (rewards_ql_training/episodes, t_ql_tr))
-    print("Average reward with QL             | %.4f | %.4f " % (rewards_ql/episodes, t_ql))
+    print("VI | %.4f" % (rewards_vi/episodes))
+    print("QL | %.4f" % (rewards_ql/episodes))
 
-print_algorithms_compare (MDP1, 30000)
-print_algorithms_compare (MDP2, 30000)
-print_algorithms_compare (geraMDPxereta(), 30000)
-print_algorithms_compare (largeMDP, 30000)
 
-teste = BlackjackMDP(valores_cartas=[8, 10, 30], multiplicidade=3, limiar=1000, custo_espiada=1)
-print_algorithms_compare(teste, 30000)
-        
 
+print("Average Reward")
+print("Training with MDP1 and identityFeatureExtractor")
+ql = QLearningAlgorithm(MDP1.actions, MDP1.discount(), identityFeatureExtractor)
+util.simulate(MDP1, ql, 30000)
+ql.explorationProb = 0
+
+print("-----------\nMDP1")
+print_algorithms_compare (MDP1, ql, 30000)
+print("-----------\nMDP2")
+print_algorithms_compare (MDP2, ql, 30000)
+print("-----------\nlargeMDP")
+print_algorithms_compare (largeMDP, ql, 30000)
+
+print("\nTraining with MDP1 and blackjackFeatureExtractor")
+ql = QLearningAlgorithm(MDP1.actions, MDP1.discount(), blackjackFeatureExtractor)
+util.simulate(MDP1, ql, 30000)
+print(ql.weights)
+ql.explorationProb = 0
+
+print("-----------\nMDP1")
+print_algorithms_compare (MDP1, ql, 30000)
+print("-----------\nMDP2")
+print_algorithms_compare (MDP2, ql, 30000)
+print("-----------\nlargeMDP")
+print_algorithms_compare (largeMDP, ql, 30000)
+
+print("\nTraining with largeMDP and blackjackFeatureExtractor")
+ql = QLearningAlgorithm(largeMDP.actions, largeMDP.discount(), blackjackFeatureExtractor)
+util.simulate(largeMDP, ql, 30000, verbose=False)
+print(ql.weights)
+ql.explorationProb = 0
+
+print("-----------\nMDP1")
+print_algorithms_compare (MDP1, ql, 30000)
+print("-----------\nMDP2")
+print_algorithms_compare (MDP2, ql, 30000)
+print("-----------\nlargeMDP")
+print_algorithms_compare (largeMDP, ql, 30000)

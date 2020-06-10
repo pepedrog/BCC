@@ -141,6 +141,7 @@ def simulate(mdp, rl, numTrials=10, maxIterations=1000, verbose=False,
             transitions = mdp.succAndProbReward(state, action)
             if sort: transitions = sorted(transitions)
             if len(transitions) == 0:
+                #print("Terminal state" + str(state) + str(action))
                 rl.incorporateFeedback(state, action, 0, None)
                 break
 
