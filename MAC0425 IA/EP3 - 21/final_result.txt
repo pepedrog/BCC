@@ -1,29 +1,31 @@
 ******************************
 Code quality:
 ------------------------------
-Code grade: 6.14/10.0	(Code with reasonably quality)
+Code grade: 6.08/10.0	(Code with reasonably quality)
 ------------------------------
 Standards deviation:
-statement:	145
+statement:	217
 info:	0
-convention:	42
-refactor:	2
-warning:	12
+convention:	65
+refactor:	3
+warning:	17
 error:	0
 fatal:	0
 ------------------------------
 Deviation description:
-trailing-whitespace:	11
+trailing-whitespace:	14
 line-too-long:	1
-redefined-outer-name:	10
-multiple-statements:	2
+redefined-outer-name:	13
+multiple-statements:	3
 singleton-comparison:	1
 consider-using-enumerate:	2
 too-many-branches:	1
-invalid-name:	25
+invalid-name:	42
 arguments-differ:	1
 too-few-public-methods:	1
-pointless-string-statement:	1
+unused-variable:	3
+missing-function-docstring:	2
+too-many-locals:	1
 ******************************
 Tests:
 ------------------------------
@@ -46,3 +48,8 @@ Part03-01 QLearningAlgorithm:
 QLearningAlgorithm:	4/4 correct
 Test concluded without errors
 Grade in the Test03-01: 10.0/10.0
+------------------------------
+Part03-02 BlackjackFeatureExtractor:
+BlackjackFeatureExtractor:	0/2 correct
+Test concluded without errors
+Grade in the Test03-02: 0.0/10.0

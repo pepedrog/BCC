@@ -115,7 +115,7 @@ class BlackjackMDP(util.MDP):
                     deck = None
                 new_states = [((total, None, deck), prob_card, reward)]
             else:
-                # Add a new state for each possible card
+                # Didnt peek: add a new state for each possible card
                 for card in range(len(deck)):
                     new_total = total + self.valores_cartas[card]
                     prob_card = deck[card] / total_cards
@@ -132,7 +132,6 @@ class BlackjackMDP(util.MDP):
                         new_deck = None
                     if prob_card > 0:
                         new_states.append(((new_total, None, new_deck), prob_card, reward))
-        
         elif action == 'Espiar':
             if peek is not None:
                 # Forbidden double peeking
@@ -194,10 +193,8 @@ class ValueIteration(util.MDPAlgorithm):
         # BEGIN_YOUR_CODE
         for state in mdp.states:
             V[state] = 0
-            
         gamma = mdp.discount()
         delta = float('inf')
-        
         while delta > epsilon*((1-gamma)/gamma):
             partial_delta = 0
             for state in mdp.states:
@@ -213,13 +210,13 @@ class ValueIteration(util.MDPAlgorithm):
         self.pi = pi
         self.V = V
 
-DEBUG = False
 
 # First MDP
 MDP1 = BlackjackMDP(valores_cartas=[1, 5], multiplicidade=2, limiar=10, custo_espiada=1)
 # Second MDP
 MDP2 = BlackjackMDP(valores_cartas=[1, 5], multiplicidade=2, limiar=15, custo_espiada=1)
 
+DEBUG = False
 if DEBUG:
     solver = ValueIteration()
     solver.solve(MDP2)
@@ -237,18 +234,6 @@ def geraMDPxereta():
     # BEGIN_YOUR_CODE
     return BlackjackMDP(valores_cartas=[5, 20], multiplicidade=4, limiar=20, custo_espiada=1)
     # END_YOUR_CODE
-"""
-    vi = ValueIteration()
-    vi.solve(teste)
-    espiadas = 0
-    for state in teste.states:
-        if state[2] is not None:
-            print("Tenho " + str(state[0]) + ", Espiei " + str(state[1]) + 
-                  ", Devo " + str(vi.pi[state]))
-        if vi.pi[state] == 'Espiar':
-            espiadas += 1
-    print("total = " + str(espiadas/len(teste.states)))
-    print("---------------------")"""
 
 # **********************************************************
 # **                    PART 03 Q-Learning                **
@@ -355,7 +340,7 @@ def blackjackFeatureExtractor(state, action):
             max_cards = max(max_cards, c)
             cards_left += c
         cards_hand = max_cards*len(state[2]) - cards_left
-    return [((state[0], action), 1)]
+    return [("cards_left", cards_left), ((state[0], action), 1)]
     
     # END_YOUR_CODE
 
@@ -368,52 +353,24 @@ def blackjackFeatureExtractor3(state, action):
     # Feature 1, 2 = Cards Left, Cards in Hand (extimate)
     # Feature 1 = estimative of points in the deck
     cards_left = 0
-    cards_hand = 0
-    max_cards = 0
     if state[2] is not None:
         for c in state[2]:
-            max_cards = max(max_cards, c)
-            cards_left += c
-        cards_hand = max_cards*len(state[2]) - cards_left
-    return [("cards_left", cards_left), ("cands_hand", cards_hand), ((state[0], action), 1)]
+            cards_left += c       
+    return [("cards_left", cards_left), ((state[0], action), 1)]
     
     # END_YOUR_CODE
-def blackjackFeatureExtractor2(state, action):
-    """
-    You should return a list of (feature key, feature value) pairs.
-    (See identityFeatureExtractor() above for a simple example.)
-    """
-    # BEGIN_YOUR_CODE
-    # Feature 1, 2 = Cards Left, Cards in Hand (extimate)
-    cards_left = 0
-    cards_hand = 0
-    max_cards = 0
-    if state[2] is not None:
-        for c in state[2]:
-            max_cards = max(max_cards, c)
-            cards_left += c
-        cards_hand = max_cards*len(state[2]) - cards_left
-    f1 = ("cards_left", cards_left)
-    f2 = ("cards_hand", cards_hand)
-    # Feature 3 = action identifiers
-    f3 = (action, 1)
-    # Feature 4 = my total
-    f4 = ("total", state[0])
-    return [f1, f2, f3, f4]
-    # END_YOUR_CODE
+
+# Essa parte abaixo foi implementada para ajudar no testes
+
 # **********************************************************
 # **                     SIMULATIONS                      **
 # **********************************************************
+TESTING = False
+#TESTING = True
 
 # Funtion to simulate the ValueIteraction Algorithm
 def simulateVI(mdp, vi, numTrials=10, maxIterations=1000):
-    """
-     Perform |numTrials| of the following:
-     On each trial, take the MDP |mdp| and an RLAlgorithm |rl| and simulates the
-     RL algorithm according to the dynamics of the MDP.
-     Each trial will run for at most |maxIterations|.
-     Return the list of rewards that we get for each trial.
-    """
+    
     def sample(probs):
         """Return i in [0, ..., len(probs)-1] with probability probs[i]."""
         target = random.random()
@@ -426,7 +383,6 @@ def simulateVI(mdp, vi, numTrials=10, maxIterations=1000):
     totalRewards = []  # The rewards we get on each trial
     for trial in range(numTrials):
         state = mdp.startState()
-        sequence = [state]
         totalDiscount = 1
         totalReward = 0
         for _ in range(maxIterations):
@@ -453,43 +409,35 @@ def print_algorithms_compare(mdp, ql, episodes):
     print("VI | %.4f" % (rewards_vi/episodes))
     print("QL | %.4f" % (rewards_ql/episodes))
 
-
-
-print("Average Reward")
-print("Training with MDP1 and identityFeatureExtractor")
-ql = QLearningAlgorithm(MDP1.actions, MDP1.discount(), identityFeatureExtractor)
-util.simulate(MDP1, ql, 30000)
-ql.explorationProb = 0
-
-print("-----------\nMDP1")
-print_algorithms_compare (MDP1, ql, 30000)
-print("-----------\nMDP2")
-print_algorithms_compare (MDP2, ql, 30000)
-print("-----------\nlargeMDP")
-print_algorithms_compare (largeMDP, ql, 30000)
-
-print("\nTraining with MDP1 and blackjackFeatureExtractor")
-ql = QLearningAlgorithm(MDP1.actions, MDP1.discount(), blackjackFeatureExtractor)
-util.simulate(MDP1, ql, 30000)
-print(ql.weights)
-ql.explorationProb = 0
-
-print("-----------\nMDP1")
-print_algorithms_compare (MDP1, ql, 30000)
-print("-----------\nMDP2")
-print_algorithms_compare (MDP2, ql, 30000)
-print("-----------\nlargeMDP")
-print_algorithms_compare (largeMDP, ql, 30000)
-
-print("\nTraining with largeMDP and blackjackFeatureExtractor")
-ql = QLearningAlgorithm(largeMDP.actions, largeMDP.discount(), blackjackFeatureExtractor)
-util.simulate(largeMDP, ql, 30000, verbose=False)
-print(ql.weights)
-ql.explorationProb = 0
-
-print("-----------\nMDP1")
-print_algorithms_compare (MDP1, ql, 30000)
-print("-----------\nMDP2")
-print_algorithms_compare (MDP2, ql, 30000)
-print("-----------\nlargeMDP")
-print_algorithms_compare (largeMDP, ql, 30000)
+if TESTING:
+    print("Average Reward")
+    print("Training with own MDP and identityFeatureExtractor")
+    ql = QLearningAlgorithm(MDP1.actions, MDP1.discount(), identityFeatureExtractor)
+    util.simulate(MDP1, ql, 30000)
+    ql.explorationProb = 0
+    
+    print("-----------\nMDP1")
+    print_algorithms_compare(MDP1, ql, 30000)
+    print("-----------\nMDP2")
+    ql = QLearningAlgorithm(MDP2.actions, MDP1.discount(), identityFeatureExtractor)
+    util.simulate(MDP2, ql, 30000)
+    ql.explorationProb = 0
+    print_algorithms_compare(MDP2, ql, 30000)
+    print("-----------\nlargeMDP")
+    ql = QLearningAlgorithm(MDP1.actions, MDP1.discount(), identityFeatureExtractor)
+    util.simulate(largeMDP, ql, 30000)
+    ql.explorationProb = 0
+    print_algorithms_compare(largeMDP, ql, 30000)
+    
+    print("\nTraining with MDP1 and blackjackFeatureExtractor")
+    ql = QLearningAlgorithm(MDP1.actions, MDP1.discount(), blackjackFeatureExtractor)
+    util.simulate(MDP1, ql, 30000)
+    ql.explorationProb = 0
+    
+    print("-----------\nMDP1")
+    print_algorithms_compare(MDP1, ql, 30000)
+    print("-----------\nMDP2")
+    print_algorithms_compare(MDP2, ql, 30000)
+    print("-----------\nlargeMDP")
+    print_algorithms_compare(largeMDP, ql, 30000)
+    
