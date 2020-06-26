@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Resultado da Query Exame</h1>
+    <p>Lista de Exames</p>
+    {% if exame_result_list %}
+    <p>TOTAL: {{exame_result_list | length}}</p>
+    {% for row in exame_result_list %}
+    <ul>
+      <li><p>id exame: {{row.id_exame}}</p></li>
+      <li><p>tipo: {{row.tipo}}</p></li>
+      <li><p>virus: {{row.virus}}</p></li>
+    </ul>
+    <br />
+    {% endfor %} {% else %}
+    <p>No results are available.</p>
+    {% endif %}
+  </body>
+</html>

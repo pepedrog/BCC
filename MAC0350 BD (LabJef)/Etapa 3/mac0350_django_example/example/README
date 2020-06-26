@@ -1,0 +1,62 @@
+Exemplo de como realizar consultas SQL no SGBDR PostgreSQL com o framework python Django
+
+1) Dependências python(pip):
+
+django
+django-extensions
+psycopg2-binary
+
+2) Dependências de sistema:
+
+postgresql
+graphviz (opcional)
+
+3)Instruções de uso
+
+Esse sistema  utiliza apenas uma fração das funcionalidades do framework MVC Django afim de
+exemplificar a integração de um SGBDR com um sistema web. Para maiores detalhes e especificidades
+da arquitetura do Django, recomendo a leitura do tutorial disponível em:
+
+https://docs.djangoproject.com/en/3.0/intro/tutorial01/
+
+Primeiramente, é necessário instalar as dependências listadas acima. As dependências de pacotes python
+podem ser instaladas via pip, possivelmente em um ambiente virtual, ou via gerenciador de pacote de sua
+distribuição linux, assim como as demais dependências de sistema. Caso já não possua uma instalação do
+postgresql disponível, recomendo consultar instruções específicas para instalá-lo em seu sistema operacional.
+Quem implementou a parte 2 do projeto utilizando o pgadmin da disciplina, podera utilizar seu bd acessando-o
+diretamente em data.ime.usp.br na porta 53231, desde que esteja utilizando a vpn da usp.
+
+Para executar esse exemplo:
+
+ - ajuste os parâmetros de conexão com o banco de dados em mysite/settings.py;
+ - dentro do diretório raiz do projeto, execute o comando: python manage.py runserver. Caso não ocorram erros,
+  você verá uma mensagem terminada em:
+   			
+			Django version 3.0.7, using settings 'mysite.settings'
+			Starting development server at http://127.0.0.1:8000/
+			Quit the server with CONTROL-C.
+
+ - Em seguida, abra seu nevegador e vá até o endereço localhost:8000/example. Você verá uma mesagem indicando
+  que o sistema está executando.
+ - Os dois exemplos de queries estão disponíveis em localhost:8000/example/query1 e localhost:8000/example/query2.
+
+O Django oferece uma interface para administrar as tabelas do bd disponível em localhost:8000/admin. No entanto,
+para utilizar essa funcionalidade é preciso fazer o mapeamento objeto-relacional das tabelas as quais deseja-se
+gerenciar por meio dessa interface. Isso é feito no arquivo example/models.py desse projeto. Note que, os dois
+exemplos apresentados utilizam apenas consultas diretas ao banco de dados e, por simplicidade, exibem diretamente
+seus resultados sem mapeá-los para objetos python.
+
+As interfaces de adminstração do Django requerem um superusuário e senha, os quais podem ser configurados por meio
+do comando python manage.py createsuperuser. Nesse exemplo, o usuário foi definido como "admin" e senha "admin".
+
+O código dos dois exemplos de consulta está disponível no arquivo example/views.py, enquanto que suas respectivas
+páginas web são declaradas em example/urls.py e renderizadas com os templates disponíveis em example/templates/example/
+
+Para quem não tem familiaridade com o Django e quer utilizar esse exemplo como base da parte 3 do projeto de mac0350, recomendo fortemente que sigam o tutorial citado acima e compare com o código desse exemplo.
+
+4) ATENÇÃO!
+
+Antes de executar esse exemplo, FAÇA UM BACKUP DO SEU BANCO DE DADOS !
+Caso decida implementar o mapeamento objeto-relacional, o Django irá criar tabelas adicionais em seu bd ao executar
+o comando python manage.py migrate.
+
