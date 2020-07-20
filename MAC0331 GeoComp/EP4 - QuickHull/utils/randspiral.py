@@ -24,7 +24,7 @@ if __name__ == '__main__':
 	import sys
 
 	if len (sys.argv) != 3:
-		print sys.argv[0],'<num_pts> <num_turns>'
+		print (sys.argv[0],'<num_pts> <num_turns>')
 		sys.exit (1)
 
 	num_pts = int (sys.argv[1])
@@ -33,4 +33,4 @@ if __name__ == '__main__':
 	l = randspiral (num_pts, num_turns)
 
 	for p in l:
-		print p[0],p[1]
+		print (p[0],p[1])

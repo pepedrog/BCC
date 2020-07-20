@@ -14,12 +14,12 @@ def rand_n_vertices (num_pts, num_vertices, radius):
 	if num_vertices > num_pts:
 		num_vertices, num_pts = num_pts, num_vertices
 	
-	l1 = randdisc.randdisc (num_pts - num_vertices, 0.7*radius)
-	l2 = uniform_circ.uniform_circ (num_vertices, radius)
+	l1 = randdisc (num_pts - num_vertices, 0.7*radius)
+	l2 = uniform_circ (num_vertices, radius)
 
 	l1.extend (l2)
 
-	return embaralha.embaralha (l1)
+	return l1
 
 if __name__ == '__main__':
 	import sys
