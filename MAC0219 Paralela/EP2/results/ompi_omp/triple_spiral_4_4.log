@@ -1,0 +1,14 @@
+
+ Performance counter stats for 'mpirun -np 4 ./bin/mandelbrot_ompi_omp -0.188 -0.012 0.554 0.754 4096 4' (15 runs):
+
+      28881.538809      task-clock (msec)         #    6.660 CPUs utilized            ( +-  0.25% )
+            13,513      context-switches          #    0.468 K/sec                    ( +-  1.82% )
+               151      cpu-migrations            #    0.005 K/sec                    ( +-  3.78% )
+            30,761      page-faults               #    0.001 M/sec                    ( +-  0.01% )
+    97,451,048,616      cycles                    #    3.374 GHz                      ( +-  0.24% )
+    83,057,260,011      instructions              #    0.85  insn per cycle           ( +-  0.02% )
+    10,288,315,510      branches                  #  356.225 M/sec                    ( +-  0.03% )
+        19,364,252      branch-misses             #    0.19% of all branches          ( +-  0.32% )
+
+       4.336414034 seconds time elapsed                                          ( +-  0.81% )
+

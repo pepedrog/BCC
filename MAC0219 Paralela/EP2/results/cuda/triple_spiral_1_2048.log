@@ -1,0 +1,29 @@
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+Failed to launch compute_mandelbrot kernel | Error: invalid configuration argument
+
+ Performance counter stats for './bin/mandelbrot_cuda -0.188 -0.012 0.554 0.754 4096 1 2048' (15 runs):
+
+         77.190952      task-clock (msec)         #    0.883 CPUs utilized            ( +-  2.92% )
+                47      context-switches          #    0.605 K/sec                    ( +-  3.12% )
+                 1      cpu-migrations            #    0.010 K/sec                    ( +- 38.96% )
+             4,081      page-faults               #    0.053 M/sec                    ( +-  0.01% )
+       259,242,593      cycles                    #    3.358 GHz                      ( +-  0.91% )
+       238,112,625      instructions              #    0.92  insn per cycle           ( +-  0.29% )
+        51,659,091      branches                  #  669.238 M/sec                    ( +-  0.36% )
+         1,372,752      branch-misses             #    2.66% of all branches          ( +-  1.55% )
+
+       0.087456285 seconds time elapsed                                          ( +-  8.54% )
+

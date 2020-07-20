@@ -1,0 +1,14 @@
+
+ Performance counter stats for './bin/mandelbrot_cuda -0.188 -0.012 0.554 0.754 4096 2048 4' (15 runs):
+
+       3987.011301      task-clock (msec)         #    0.994 CPUs utilized            ( +-  0.13% )
+                96      context-switches          #    0.024 K/sec                    ( +-  1.05% )
+                 1      cpu-migrations            #    0.000 K/sec                    ( +- 30.98% )
+            16,369      page-faults               #    0.004 M/sec                    ( +-  0.00% )
+    14,850,531,912      cycles                    #    3.725 GHz                      ( +-  0.13% )
+    14,429,245,260      instructions              #    0.97  insn per cycle           ( +-  0.24% )
+     3,078,880,334      branches                  #  772.228 M/sec                    ( +-  0.23% )
+        20,176,936      branch-misses             #    0.66% of all branches          ( +-  0.28% )
+
+       4.010770045 seconds time elapsed                                          ( +-  0.16% )
+
