@@ -1,0 +1,460 @@
+\documentclass[a4paper,10pt, leqno]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{array}
+\usepackage{bm}
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{bbm}
+%\usepackage{algorithmic}
+
+\newcommand{\restr}[1]{|_{#1}}
+
+\theoremstyle{definition}
+\def\blankpage{%
+      \null%
+      \clearpage}
+
+\let\oldref\ref
+\renewcommand{\ref}[1]{(\oldref{#1})}
+
+%opening
+\title{MAC0325 Combinatorial Optimization \\
+        \large Assignment 3 }
+\author{Pedro Gigeck Freire \\
+        10737136}
+\date{December 14, 2020}
+
+%\setlength{\parindent}{0.5em}
+%\setlength{\parskip}{0.1em}
+\begin{document}
+
+\maketitle
+
+\section*{Exercise 1}
+
+Let $u : A \to \mathbb{R} \cup \{+\infty\}$ be a capacity function given by $u(a) \coloneqq +\infty$ for each $a \in A$, and let $
+\beta \coloneqq 1$.
+
+We claim that the Shortest Walk Problem (SWP) on $(D, c, r, s)$ is homomorphically equivalent to the Min-Cost Flow Problem (MCFP) on $(D, c, u, r, s, \beta)$
+
+First, let us set some notation.
+
+Let $X \coloneqq \{ W : W \text{ is a } rs\text{-walk in } D \}$ be the feasible set of SWP on $(D, c, r, s)$ and let $Y \coloneqq \{ f \in R_+^A : f \leq u \text{ and } B_Df = \beta(e_s - e_r)\}$ be the feasible set of MCFP on $(D, c, u, r, s, \beta)$.
+ 
+\newtheorem{proposition}{Proposition}
+\begin{proposition}
+    Let $\varphi : X \to Y$ be a function given by 
+    \begin{equation*}
+        \tag{1.1} \varphi(W) \coloneqq \mathbbm{1}_W \text{, for each } W \in X.
+    \end{equation*}
+    
+Then, SWP $\xrightarrow{\varphi}$ MCFP. 
+\end{proposition}
+\begin{proof}
+Let $W \in X$. We have.
+\begin{align*}
+ c^{\intercal}\varphi(W) &= c^{\intercal}\mathbbm{1}_W &\text{by (1.1)} \\
+ &= c(W) &\text{by (11.13) from the lectures}\\
+\end{align*}
+
+Indeed, the walk $W$ and the flow obtained $\varphi(W)$ have the same objective value. Hence $\varphi$ is a homomorphism.
+\end{proof}
+
+
+\begin{proposition}
+ Let $f \in Y$ be a $rs$-flow in $D$. Then there is a walk $W \in X$ such that $c^{\intercal}f \geq c(W)$.  
+\end{proposition}
+
+\begin{proof}
+
+If $G$ has any negative cycle $C \coloneqq \langle v_0, a_1, v_1, ..., a_l, v_l \rangle$, then there is a walk $R$ from $r$ to $v_0$ and a walk $S$ from $v_0$ to $s$, because $r \rightsquigarrow v \rightsquigarrow s$ for each $v \in V$.
+
+So one can take a $rs$-walk $W$ with cost arbitrarily low, by taking
+$$W \coloneqq R \cdotp (\prod_{i \in [k]}{C}) \cdotp S $$
+for some $k \in \mathbb{N}$ arbitrarily high, so that $c^{\intercal}f \geq c(W)$.
+
+Now suppose $G$ has no negative cycles.
+
+ By the exercise 18.10 from the lectures (Decomposition of Flows), there are: a set $\mathcal{C}$ of cycles of $G$, a set $\mathcal{P}$ of $rs$-paths of $G$, a vector $y \in R_+^{\mathcal{C}}$ and a vector $x \in R_+^{\mathcal{P}}$ such that
+ 
+\begin{align*}
+  \tag{1.2} f = \sum_{C \in \mathcal{C}}{y_C \mathbbm{1}_C} + \sum_{P \in \mathcal{P}}{x_P \mathbbm{1}_P}, \\
+  \tag{1.3} \mathbbm{1}^{\intercal}x = value(f) = \beta = 1
+\end{align*}
+
+ 
+ Now, let $W \in \mathcal{P}$ attain a path of minimun cost, i.e.,
+
+\begin{align*}
+  c(W) &= \min_{P \in \mathcal{P}}{c(P)} \implies \\
+  \tag{1.4} c(W) &\geq c(P) \text{ for each } P \in \mathcal{P}
+\end{align*}
+
+Then
+
+\begin{align*}
+  c^{\intercal}f &= c^{\intercal}(\sum_{C \in \mathcal{C}}{y_C \mathbbm{1}_C} + \sum_{P \in \mathcal{P}}{x_P \mathbbm{1}_P}) &\text{ by (1.2)}\\
+  &= c^{\intercal}\sum_{C \in \mathcal{C}}{y_C \mathbbm{1}_C} + c^{\intercal}\sum_{P \in \mathcal{P}}{x_P \mathbbm{1}_P} \\
+  &= \sum_{C \in \mathcal{C}}{y_C (c^{\intercal} \mathbbm{1}_C)} + \sum_{P \in \mathcal{P}}{x_P (c^{\intercal}\mathbbm{1}_P)} \\
+  &\geq \sum_{C \in \mathcal{C}}{y_C} + \sum_{P \in \mathcal{P}}{x_P (c^{\intercal}\mathbbm{1}_P)} &\text{since $G$ has no negative cycles}\\
+  &\geq \sum_{P \in \mathcal{P}}{x_P (c^{\intercal}\mathbbm{1}_P)} &\text{since }y \geq 0\\
+  &= \sum_{P \in \mathcal{P}}{x_P \sum_{a \in A}{c(a)\mathbbm{1}_P(a)}} \\
+  &= \sum_{P \in \mathcal{P}}{x_P \sum_{a \in A}{c(a)[a \in A(P)]}} \\
+  &= \sum_{P \in \mathcal{P}}{x_P c(P)} \\
+  &\geq \sum_{P \in \mathcal{P}}{x_P c(W)} &\text{ by (1.4)} \\
+  &=  c(W)\sum_{P \in \mathcal{P}}{x_P} \\
+  &=  c(W)\mathbbm{1}^{\intercal}x \\
+  &=  c(W) &\text{ by (1.3)}
+\end{align*}
+\end{proof}
+
+Note that Proposition 2 builds an implicit homomorphism from MCFP on $(D, c, u, r, s, \beta)$ to SWP on $(D, c, r, s)$. 
+
+Thus, since Proposition 1 builds a homomorphism from SWP to MCFP, these two problems are homomorphically equivalent.
+
+
+\section*{Exercise 3}
+
+We will build a new graph by adding a new arc from $s$ to $r$ with cost $0$ and lower and upper capacity equal to $\beta$.
+
+Let $a'$ be a new arc (not already in $A$), let $A' \coloneqq A \cup \{a'\}$ and let $\varphi' : A' \to V \times V$ be an extension of $\varphi$ by setting $\varphi'(a') \coloneqq (s, r)$.
+
+Let $D' \coloneqq (V, A', \varphi')$. Let $c' \in \mathbb{R}^{A'}$ be an extension of $c$ by setting 
+\begin{equation*}
+    \tag{3.1} c'(a') \coloneqq 0 
+\end{equation*}
+
+Let $u' : A' \to \mathbb{R}_+ \cup \{+\infty\}$ be an extension of $u$ by setting 
+
+\begin{equation}
+    \tag{3.2} u'(a') \coloneqq \beta
+\end{equation}
+
+And let $l' \in R_+^{A'}$ be defined by 
+$$l'(a) \coloneqq
+\left\{
+	\begin{array}{ll}
+		0  & \mbox{if } a \in A \\
+		\beta & \mbox{if } a = a' \\
+	\end{array}
+\right.$$
+
+Now, we may build our isomorphism.
+
+Let $X \coloneqq \{ f \in R_+^A : f \leq u \text{ and } B_Df = \beta(e_s - e_r)\}$ be the set of feasible $rs$-flows in $D$ (with respect to $u$).
+
+Let $Y \coloneqq \{ f' \in R_+^{A'} : l' \leq f' \leq u'\}$ be the set of feasible circulations in $D'$ (with respect to $l'$ and $u'$).
+
+\paragraph{3.1 The Homomorphism} Let $\psi : X \to Y$ be a function that maps a flow in $D$ to its correspondent circulation in $D'$, i.e.
+\begin{align*}
+    \tag{3.3} \psi(f) \coloneqq f'
+\end{align*}
+with
+\begin{align*}
+    \tag{3.4}
+    f'(a) \coloneqq 
+    \left\{
+        \begin{array}{ll}
+            f(a)  & \mbox{if } a \in A \\
+            \beta & \mbox{if } a = a' \\
+        \end{array}
+    \right. \text{ for each } a \in A'
+\end{align*}
+
+Note that $\psi$ is well defined, since $f'$ is indeed a feasible circulation with respect to $l'$ and $u'$ by the definition of these vectors. For each $a \in A$,  we have 
+$$l'(a) = 0 \leq f(a) = f'(a) = f(a) \leq u(a) = u'(a)$$
+and for $a = a'$ we have 
+$$l'(a') = f'(a') = u'(a') = \beta.$$
+
+\newtheorem{lemma}{Lemma}
+\begin{lemma}
+ $\psi$, as defined in 3.1, is a homomorphism from the Min-Cost Flow Problem on $(D, c, u, r, s, \beta)$ to the Min-Cost Circulation Problem on $(D', c', l', u')$.
+\end{lemma}
+\begin{proof}
+\begin{align*}
+ {c'}^{\intercal}\psi(f) &= {c'}^{\intercal}f' &\text{ by (3.3)}\\
+ &= \sum_{a \in A'}{c'(a)f'(a)} \\
+ &= \sum_{a \in A}{c'(a)f'(a)} + c'(a') &\text{ by definition of } A'\\
+ &= \sum_{a \in A}{c'(a)f'(a)} &\text{ by (3.1)}\\
+ &= \sum_{a \in A}{c(a)f(a)} &\text{ since $c'$ and $f'$ are extensions}\\
+ &= c^{\intercal}f
+\end{align*}
+
+Thus, $\psi(f)$ and $f$ have the same objective value, so $\psi$ is a homomorphism.
+\end{proof}
+
+\begin{proposition}
+ $\psi$, as defined in 3.1, is injective.
+\end{proposition}
+\begin{proof}
+ Let $f, g \in X$ such that $\psi(f) = \psi(g)$. We have
+ \begin{align*}
+  \psi(f) = \psi(g)  &\implies f' = g' &\text{by (3.3)} \\
+  &\implies f'(a) = g'(a) \text{ for each } a \in A' \\
+  &\implies f'(a) = g'(a) \text{ for each } a \in A &\text{ because } A \subset A' \\
+  &\implies f(a) = g(a) \text{ for each } a \in A &\text{ by (3.4)} \\
+  &\implies f = g
+ \end{align*}
+
+ Hence $\psi$ is injective.
+\end{proof}
+
+\begin{proposition}
+ $\psi$, as defined in 3.1, is surjective.
+\end{proposition}
+\begin{proof}
+ Let $f' \in Y$ and set $f \coloneqq f'\restr{A}$. We claim that $f \in X$.
+ 
+First, we have that $f$ is a $rs$-flow in $D$ that respects 
+ $$0 = l'(a) \leq f(a) \leq u'(a) = u(a) \text{ for each } a \in A$$ 
+ 
+ Now, note that $f'(a') = \beta$, because
+ $$
+ \beta = l'(a) \leq f'(a) \leq u'(a) = \beta
+ $$
+ 
+Then, $B_Df = \beta(e_s - e_r)$, since $B_Df' = 0$, so that when we remove the arc $a'$ the only affected vertices are $s$ and $r$, so the excess of flow in these vertices is $f'(a') = \beta$ in $s$ and $-\beta$ in $r$.
+
+These facts shows that $f \in X$.
+
+ Thus, it is straighfoward from the definition of $\psi$ and the fact that $f'(a) = \beta$ that $f' = \psi(f)$
+
+ Hence, each $f' \in Y$ is the image of some $f \in X$, so $\psi$ is surjective.
+\end{proof}
+
+\begin{lemma}
+ $\psi$, as defined in 3.1, is a bijection.
+\end{lemma}
+\begin{proof}
+ Immeadiate from Propositions 3 and 4.
+\end{proof}
+
+\begin{lemma}
+Let $\psi$ be defined as in 3.1. Then the inverse function $\psi^{-1} : Y \to X $ is a homomorphism from the Min-Cost Circulation Problem on $(D', c', l', u')$ to the Min-Cost Flow Problem on $(D, c, u, r, s, \beta)$.
+\end{lemma}
+\begin{proof}
+ As we showed in the proof of Proposition 4, for each $f' \in Y$ we have 
+ \begin{equation*}
+ \tag{3.5} \psi^{-1}(f') = f'\restr{A}.
+ \end{equation*}
+
+ 
+ So, for each circulation $f' \in Y$
+ \begin{align*}
+  c^\intercal \psi^{-1}(f') &= c^\intercal f'\restr{A} &\text{ by (3.5)} \\
+  &= \sum_{a \in A}{c(a)f'(a)} \\
+  &= \sum_{a \in A}{c'(a)f'(a)} &\text{ by definition of } c' \\
+  &= \sum_{a \in A}{c'(a)f'(a)} + c'(a')f'(a) &\text{ by (3.1)} \\
+  &= \sum_{a \in A'}{c'(a)f'(a)} &\text{ by definition of } A' \\
+  &= {c'}^\intercal f'
+ \end{align*}
+
+Hence $f'$ and $\psi^{-1}(f')$ is a homomorphism. 
+\end{proof}
+
+\newtheorem{theorem}{Theorem}
+\begin{theorem}
+ $\psi$, as defined in 3.1, is a isomorphism.
+\end{theorem}
+\begin{proof}
+ Immediate from Lemmas 1, 2 and 3.
+\end{proof}
+
+
+Furthermore, note that if $u$ and $\beta$ are integral, then $u'$ and $l'$ are both integral, and if the flow $f \in X$ is integral, than the circulation $\psi(f)$ is also integral by the definition of $\psi$.
+
+\blankpage
+\section*{Exercise 14}
+
+We start with $M_0 = \emptyset$ and $y_0 = 0$
+
+\paragraph{$\mathbf{t = 0}$}
+(Matching update)
+
+$P_0 = \langle 3, 9 \rangle$ 
+
+$M_1 = \{\{ 3, 9 \}\}$ 
+
+\paragraph{$\mathbf{t = 1}$}
+
+(Dual update)
+
+$K_1 = \{ 3 \}$
+
+$d_1 = (1, 1, 0, 1, 1, 0, 0, 0, 0, 0)$
+
+$\lambda_1 = 1$
+
+$y_2 = (1, 1, 0, 1, 1, 0, 0, 0, 0, 0)$
+
+
+\paragraph{$\mathbf{t = 2}$}
+
+(Dual update)
+
+$K_2 = \{ 9 \}$
+
+$d_2 = (1, 1, 1, 1, 1, 0, 0, 0, -1, 0)$
+
+$\lambda_2 = 1$
+
+$y_3 = (2, 2, 1, 2, 2, 0, 0, 0, -1, 0)$
+
+\paragraph{$\mathbf{t = 3}$}
+
+(Matching update)
+
+$P_3 = \langle 1, 9, 3, 10 \rangle$ 
+
+$M_4 = \{\{ 1, 9 \}, \{3, 10\}\}$ 
+
+\paragraph{$\mathbf{t = 4}$}
+
+(Dual update)
+
+$K_4 = \{ 1, 3 \}$
+
+$d_4 = (0, 1, 0, 1, 1, 0, 0, 0, 0, 0)$
+
+$\lambda_4 = 2$
+
+$y_5 = (2, 4, 1, 4, 4, 0, 0, 0, -1, 0)$
+
+\paragraph{$\mathbf{t = 5}$}
+
+(Dual update)
+
+$K_5 = \{ 3, 9 \}$
+
+$d_5 = (1, 1, 0, 1, 1, 0, 0, 0, -1, 0)$
+
+$\lambda_5 = 1$
+
+$y_6 = (3, 5, 1, 5, 5, 0, 0, 0, -2, 0)$
+
+\paragraph{$\mathbf{t = 6}$}
+
+(Dual update)
+
+$K_6 = \{ 9, 10 \}$
+
+$d_6 = (1, 1, 1, 1, 1, 0, 0, 0, -1, -1)$
+
+$\lambda_6 = 1$
+
+$y_7 = (4, 6, 2, 6, 6, 0, 0, 0, -3, -1)$
+
+\paragraph{$\mathbf{t = 7}$}
+
+(Matching update)
+
+$P_7 = \langle 2, 10, 3, 6 \rangle$ 
+
+$M_8 = \{\{ 2, 10 \}, \{3, 6\}, \{ 1, 9 \}\}$ 
+
+\paragraph{$\mathbf{t = 8}$}
+
+(Dual update)
+
+$K_8 = \{ 9, 10, 3 \}$
+
+$d_8 = (1, 1, 0, 1, 1, 0, 0, 0, -1, -1)$
+
+$\lambda_8 = 2$
+
+$y_9 = (6, 8, 2, 8, 8, 0, 0, 0, -5, -3)$
+
+\paragraph{$\mathbf{t = 9}$}
+
+(Dual update)
+
+$K_9 = \{ 6, 9, 10 \}$
+
+$d_9 = (1, 1, 1, 1, 1, -1, 0, 0, -1, -1)$
+
+$\lambda_9 = 3$
+
+$y_{`10} = (9, 11, 5, 11, 11, -3, 0, 0, -8, -6)$
+
+\paragraph{$\mathbf{t = 10}$}
+
+(Matching update)
+
+$P_{10} = \langle 5, 9, 1, 6, 3, 8 \rangle$ 
+
+$M_{11} = \{\{2, 10\}, \{ 5, 9 \}, \{1, 6 \}, \{ 3, 8 \}\}$ 
+
+\paragraph{$\mathbf{t = 11}$}
+
+(Dual update)
+
+$K_{11} = \{ 1, 2, 3, 5 \}$
+
+$d_{11} = (0, 0, 0, 1, 0, 0, 0, 0, 0, 0)$
+
+$\lambda_{11} = 4$
+
+$y_{12} = (9, 11, 5, 15, 11, -3, 0, 0, -8, -6)$
+
+\paragraph{$\mathbf{t = 12}$}
+
+(Dual update)
+
+$K_{12} = \{ 1, 3, 5, 10 \}$
+
+$d_{12} = (0, 1, 0, 1, 0, 0, 0, 0, 0, -1)$
+
+$\lambda_{12} = 1$
+
+$y_{13} = (9, 12, 5, 16, 11, -3, 0, 0, -8, -7)$
+
+\paragraph{$\mathbf{t = 13}$}
+
+(Dual update)
+
+$K_{13} = \{ 3, 6, 9, 10 \}$
+
+$d_{13} = (1, 1, 0, 1, 1, -1, 0, 0, -1, -1)$
+
+$\lambda_{13} = 1$
+
+$y_{14} = (10, 13, 5, 17, 12, -4, 0, 0, -9, -8)$
+
+\paragraph{$\mathbf{t = 14}$}
+
+(Dual update)
+
+$K_{14} = \{ 6, 8, 9, 10 \}$
+
+$d_{14} = (1, 1, 1, 1, 1, -1, 0, -1, -1, -1)$
+
+$\lambda_{14} = 3$
+
+$y_{15} = (13, 16, 8, 20, 15, -7, 0, -3, -12, -11)$
+
+\paragraph{$\mathbf{t = 15}$}
+
+(Matching update)
+
+$P_{15} = \langle 4, 10, 2, 6, 1, 8, 3, 7 \rangle$ 
+
+$M_{16} = \{\{4, 10\}, \{2, 6\}, \{1, 8\}, \{3, 7\}, \{5, 9\}\} \\$
+
+
+Thus, the optimal value found was 39 and the solutions found were 
+
+$$
+M = \{\{4, 10\}, \{2, 6\}, \{1, 8\}, \{3, 7\}, \{5, 9\}\}
+$$
+$$
+y = (13, 16, 8, 20, 15, -7, 0, -3, -12, -11)
+$$
+
+\end{document}

@@ -1,0 +1,725 @@
+\documentclass[a4paper,10pt, leqno]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{array}
+\usepackage{bm}
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{bbm}
+%\usepackage{algorithmic}
+
+\newcommand{\restr}[1]{|_{#1}}
+
+\theoremstyle{definition}
+\def\blankpage{%
+      \null%
+      \clearpage}
+
+\let\oldref\ref
+\renewcommand{\ref}[1]{(\oldref{#1})}
+
+
+%opening
+\title{MAC0325 Combinatorial Optimization \\
+        \large Final Exam}
+\author{Pedro Gigeck Freire \\
+        10737136}
+\date{December 16, 2020}
+
+%\setlength{\parindent}{0.5em}
+%\setlength{\parskip}{0.1em}
+\begin{document}
+
+\maketitle
+
+\section*{Exercise 1}
+
+
+\paragraph{Necessity:}
+
+Let $f \in \mathbb{R}^A$ be a vector such that $0 \leq f \leq u$ and excess$_f \leq b$.
+Then, for each $S \in V$ we have
+\begin{align*}
+ b(S) &\geq \text{excess}_f(S) \\
+ &= B_Df(S) &\text{ by (12.5) from lectures} \\
+ &= f(\delta^{\text{in}}(S)) - f(\delta^{\text{out}}(S)) &\text{ by (12.2) from lectures}\\
+ &\geq f(\delta^{\text{in}}(S)) - u(\delta^{\text{out}}(S)) &\text{ since } f \leq u
+\end{align*}
+
+The inequality above, together with the fact that $f \geq 0$, shows
+\begin{align*}
+ b(S) + u(\delta^{\text{out}}(S)) \geq f(\delta^{\text{in}}(S)) &\geq 0
+\end{align*}
+
+And this completes the proof for necessity.
+
+\paragraph{Sufficiency:} Our hypothesis is that 
+\begin{align*}
+ b(S) + u(\delta^{\text{out}}(S)) \geq 0 \text{ for each } S \subseteq V
+\end{align*}
+
+\paragraph{\textbf{1.1 The Auxiliar Digraph.}}
+Let $V_- \coloneqq \{ v \in V : b'(v) < 0\}$ be the set of producers and $V_+ \coloneqq \{ v \in V : b'(v) \geq 0\}$ be the set of consumers. Note that $V = V_- \cup V_+$ and it is a disjoint union.
+
+Let $r$ be a new vertex (not already in $V$) and set $V' \coloneqq V \cup \{ r \}$. Let $A' \coloneqq V_- \sqcup A \sqcup V_+$ and let $\varphi' : A' \to V' \times V'$ be defined by
+
+$$
+\varphi'((i, x)) \coloneqq
+\left\{
+	\begin{array}{ll}
+		(r, x)  & \mbox{if } i = 1 \text{ (whence } x \in V_-)\\
+		\varphi(x)  & \mbox{if } i = 2 \text{ (whence } x \in A) \\
+		(x, r)  & \mbox{if } i = 3 \text{ (whence } x \in V_+)
+	\end{array}
+\right.
+$$
+
+Let $l' \in \mathbb{R}^{A'}$ be defined by
+$$
+l'((i, x)) \coloneqq
+\left\{
+	\begin{array}{ll}
+		-b(x)  & \mbox{if } i = 1 \text{ (whence } x \in V_-) \\
+		0  & \mbox{if } i = 2 \text{ (whence } x \in A) \\
+		b(x)  & \mbox{if } i = 3 \text{ (whence } x \in V_+)
+	\end{array}
+\right.
+$$
+
+Let $u' : A' \to \mathbb{R} \cup \{+\infty\}$ be defined by
+$$
+u'((i, x)) \coloneqq
+\left\{
+	\begin{array}{ll}
+		-b(x)  & \mbox{if } i = 1 \text{ (whence } x \in V_-) \\
+		u(x)  & \mbox{if } i = 2 \text{ (whence } x \in A) \\
+		b(x)  & \mbox{if } i = 3 \text{ (whence } x \in V_+)
+	\end{array}
+\right.
+$$
+
+Now, build the digraph $D' \coloneqq (V', A', \varphi')$. 
+
+\paragraph{\textbf{1.2 The Cuts in D'.}}
+Let us analyse what happened to the sets $\delta^{\text{in}}$ and $\delta^{\text{out}}$ of each subset of $V$ when we moved from $D$ to $D'$
+
+For each $S \subseteq V$, the set $\delta_{D'}^{\text{in}}(S)$ includes the (corresponding) arcs that were in the original digraph, and we added arcs going inside the producers (from $r$). 
+
+The set $\delta_{D'}^{\text{out}}(S)$ includes the (corresponding) arcs that were in the original digraph, and we just added arcs going outside the consumers (to $r$). 
+
+Then, set $S_- \coloneqq S \cap V_-$ and $S_+ \coloneqq S \cap V_+$ (note that $S = S_- \cup S_+$ and it is a disjoint union), we have
+\begin{align*}
+\tag{1.1}
+    \delta_{D'}^{\text{in}}(S) &= (\{2\}\times\delta_{D}^{\text{in}}(S)) \cup (\{1\} \times S_-) \\
+\tag{1.2}
+    \delta_{D'}^{\text{out}}(S) &= (\{2\}\times\delta_{D}^{\text{out}}(S)) \cup (\{3\} \times S_+)
+\end{align*}
+
+Next, we treat the case $S' \subseteq V'$ with $r \in S'$. Set $S \coloneqq S' \setminus V'$.
+
+In this case, the arcs going inside of $S$ are the (corresponding) ones that were going inside of $S \setminus \{r\}$ in $D$ together with the new arcs that go inside $r$, that comes from the consumers in $V_+$ that are not in $S_+$, i.e.,
+\begin{align*}
+\tag{1.3}
+    \delta_{D'}^{\text{in}}(S') &= (\{2\}\times\delta_{D}^{\text{in}}(S)) \cup (\{3\} \times (V_+ \setminus S_+)) 
+\end{align*}
+
+And the arcs going outside of $S$ are the (corresponding) ones that were going out of $S \setminus \{r\}$ in $D$ together with the new arcs going out of $r$ to the producers in $V_-$ that are not in $S_-$, i.e.,
+\begin{align*}
+\tag{1.4}
+    \delta_{D'}^{\text{out}}(S') &= (\{2\}\times\delta_{D}^{\text{out}}(S)) \cup (\{1\} \times (V_- \setminus S_-)) 
+\end{align*}
+
+\paragraph{1.3 Lower and Upper bounds in D'.}
+For each $S' \subseteq V'$, if $r \notin V'$ (whence $S ' \subseteq V$), then
+\begin{align*}
+ l'(\delta_{D'}^{\text{in}}(S')) &= l'((\{2\}\times\delta_{D}^{\text{in}}(S')) \cup (\{1\} \times S_{-}')) &\text{by (1.1)} \\
+ &= l'(\{2\}\times\delta_{D}^{\text{in}}(S')) + l'(\{1\} \times S_{-}') \\
+ &= 0 + (-b(S_-')) &\text{ by definition of }l'
+\end{align*}
+
+Analogously,
+\begin{align*}
+ u'(\delta_{D'}^{\text{out}}(S')) &= u'((\{2\}\times\delta_{D}^{\text{out}}(S')) \cup (\{3\} \times S_+')) &\text{by (1.2)}\\
+ &= u'(\{2\}\times\delta_{D}^{\text{out}}(S')) + u'(\{3\} \times S_+') \\
+ &= u(\delta_{D}^{\text{out}}(S')) + b(S_+') &\text{ by definition of }u' 
+\end{align*}
+
+Otherwise, if $r \in S'$, set $S \coloneqq S' \setminus \{r\}$  
+\begin{align*}
+ l'(\delta_{D'}^{\text{in}}(S')) &= l'((\{2\}\times\delta_{D}^{\text{in}}(S)) \cup (\{3\} \times (V_+ \setminus S_+)) &\text{by (1.3)} \\
+ &= l'(\{2\}\times\delta_{D}^{\text{in}}(S)) + l'(\{3\} \times V_+) - l'(\{3\} \times S_+)\\
+ &= 0 + b(V_+) - b(S_+) &\text{ by definition of }l'
+\end{align*}
+
+\begin{align*}
+ u'(\delta_{D'}^{\text{out}}(S')) &= u'((\{2\}\times\delta_{D}^{\text{out}}(S)) \cup (\{1\} \times (V_- \setminus S_-)) &\text{by (1.4)}\\
+ &= u'(\{2\}\times\delta_{D}^{\text{out}}(S)) + u'(\{1\} \times V_-) - u'(\{1\} \times S_-) \\
+ &= u(\delta_{D}^{\text{out}}(S)) - b(V_-) + b(S_-) &\text{ by definition of }u' 
+\end{align*}
+
+Summing up, for each $S' \subseteq V'$, if $r \notin S$, then
+\begin{align*}
+ \tag{1.5} l'(\delta_{D'}^{\text{in}}(S')) &= -b(S_-') \\
+ \tag{1.6} u'(\delta_{D'}^{\text{out}}(S')) &= u(\delta_{D}^{\text{out}}(S')) + b(S_+')
+\end{align*}
+and if $r \in S'$, set $S \coloneqq S' \setminus \{r\} $
+\begin{align*}
+ \tag{1.7} l'(\delta_{D'}^{\text{in}}(S')) &= b(V_+) - b(S_+) \\
+ \tag{1.8} u'(\delta_{D'}^{\text{out}}(S')) &= u(\delta_{D}^{\text{out}}(S)) - b(V_-) + b(S_-)
+\end{align*}
+
+
+\newtheorem{proposition}{Proposition}
+\begin{proposition}
+ Restore the context from $1.1$. Then there is a feasible circulation $f'$ in $D'$ with respect to $l'$ and $u'$.
+\end{proposition}
+\begin{proof}
+For each $S' \subseteq V'$, if $r \notin S'$
+\begin{align*}
+ u'(\delta_{D'}^{\text{out}}(S')) - l'(\delta_{D'}^{\text{in}}(S')) &= u(\delta_{D}^{\text{out}}(S')) + b(S_+') - (-b(S_-')) &\text{ by (1.5) and (1.6)}\\
+ &= u(\delta_D^{\text{out}}(S')) + b(S') \\
+ &\geq 0 &\text{ by hypothesis} 
+\end{align*}
+
+If $r \in S$, set $S \coloneqq S' \setminus \{r\}$, then
+\begin{align*}
+ u'(\delta_{D'}^{\text{out}}(S')) - l'(\delta_{D'}^{\text{in}}(S')) &= u(\delta_{D}^{\text{out}}(S)) - b(V_-) + b(S_-) - b(V_+) + b(S_+) &\text{ by (1.7) and (1.8)}\\
+ &= u(\delta_D^{\text{out}}(S)) - b(V) + b(S) \\
+ &\geq -b(V) &\text{ by hypothesis} \\
+ &= 0
+\end{align*}
+
+This two cases shows that 
+$$ u'(\delta_{D'}^{\text{out}}(S')) \geq l'(\delta_{D'}^{\text{in}}(S')) \text{ for each } S' \subseteq V'$$
+
+Thus, we can apply Hoffman's Theorem, verifying that (17.24)(ii) fails, so there is a feasible circulation $f'$ in $D'$ with respect to $l'$ and $u'$.
+\end{proof}
+
+\paragraph{\textbf{1.3 Circulation to Transshipment}}
+
+Let $f'$ be a feasible circulation $D'$ with respect to $l'$ and $u'$ (we know it exists by Proposition 1).
+Let $f : A \to \mathbb{R}$ be defined by $f(a) \coloneqq f'((2, a))$ for each $a \in A$. 
+
+We claim that $f$ is a $b$-transshipment in $D$.
+
+First, it is simple to verify that $0 \leq f \leq u$, because for each $a \in A$ $$0 = l'((2, a)) \leq f'((2, a)) = f(a) = f'((2, a)) \leq u'((2, a)) = u(a)$$
+
+Next, we need to show that excess$_f = b$. For each $v \in V$, if $v \in V_-$ then (1.1) shows that 
+\begin{align*}
+\tag{1.5}
+\delta_{D'}^{\text{in}}(v) &= (\{2\}\times\delta_{D}^{\text{in}}(v)) \cup \{(1, v)\} \\
+\tag{1.6}
+\delta_{D'}^{\text{out}}(v) &= \{2\}\times\delta_{D}^{\text{out}}(v)
+\end{align*}
+
+Then
+\begin{align*}
+ \text{excess}_f(v) &= B_Df(v) \\
+&= f(\delta_D^{\text{in}}(v)) - f(\delta_D^{\text{out}}(v)) \\
+&= f'(\{2\} \times \delta_D^{\text{in}}(v)) - f'(\{2\} \times \delta_D^{\text{out}}(v)) &\text{ by definition of }f\\
+&= f'(\delta_{D'}^{\text{in}}(v) \setminus \{(1, v)\}) - f'(\delta_{D'}^{\text{out}}(v)) &\text{ by (1.5) and (1.6) } \\
+&= f'(\delta_{D'}^{\text{in}}(v)) - f'((1, v) - f'(\delta_{D'}^{\text{out}}(v)) \\
+&= B_{D'}f'(v) - f'((1, v)) \\
+&= - f'((1, v)) &\text{ since $f'$ is a circulation} \\
+&= b(v) &\text{by definition of } f'
+\end{align*}
+
+Using the same logic, if $v \in V_+$, then (1.2) shows 
+\begin{align*}
+\tag{1.7}
+\delta_{D'}^{\text{in}}(v) &= (\{2\}\times\delta_{D}^{\text{in}}(v)) \\
+\tag{1.8}
+\delta_{D'}^{\text{out}}(v) &= \{2\}\times\delta_{D}^{\text{out}}(v) \cup \{(3, v)\} 
+\end{align*}
+
+Then
+\begin{align*}
+ \text{excess}_f(v) &= B_Df(v) \\
+&= f(\delta_D^{\text{in}}(v)) - f(\delta_D^{\text{out}}(v)) \\
+&= f'(\{2\} \times \delta_D^{\text{in}}(v)) - f'(\{2\} \times \delta_D^{\text{out}}(v)) &\text{ by definition of }f\\
+&= f'(\delta_{D'}^{\text{in}}(v)) - f'(\delta_{D'}^{\text{out}}(v)  \setminus \{(3, v)\}) &\text{ by (1.7) and (1.8) } \\
+&= f'(\delta_{D'}^{\text{in}}(v)) - f'(\delta_{D'}^{\text{out}}(v)) + f'((3, v)  \\
+&= B_{D'}f'(v) + f'((3, v)) \\
+&= f'((3, v)) &\text{ since $f'$ is a circulation} \\
+&= b(v) &\text{by definition of } f'
+\end{align*}
+
+So, excess$_f(v) = b(v)$ for each $v \in V$, thus $f$ is a $b$-transshipment in $D$. It concludes the proof for sufficiency.
+
+\blankpage
+\section*{Exercise 2}
+
+We will use the degree contraint idea, similar to section 13.2 from the lecture notes.
+
+\paragraph{\textbf{2.1 The Auxiliar Digraph D'.}}
+
+Let $r, s$ be new vertices (not in $V \sqcup A$) and let 
+$$V' \coloneqq \{r, s\} \cup (A \sqcup V)$$
+$$A' \coloneqq A \sqcup A \sqcup A \sqcup V$$
+
+Let $\varphi' : A' \to V' \times V'$ be an incidence function defined by
+$$
+\varphi'((i, x)) \coloneqq
+\left\{
+	\begin{array}{ll}
+		(r, (1, x))  & \mbox{if } i = 1 \text{ (whence } x \in A)\\
+		((1, x), (2, v)) & \mbox{if } i = 2 \text{ (whence } x \in A) \text{ and } \varphi(x) = (v, w) \\
+		((1, x), (2, w))  & \mbox{if } i = 3 \text{ (whence } x \in A) \text{ and } \varphi(x) = (v, w) \\
+		((2, x), s)  & \mbox{if } i = 4 \text{ (whence } x \in V)
+	\end{array}
+\right.
+$$
+
+Let $D' \coloneqq (V', A', \varphi') $ be a digraph.
+
+Let $c : A' \to \mathbb{R}$ be a cost function defined by
+$$
+c((i, x)) \coloneqq
+\left\{
+	\begin{array}{ll}
+		k(x)  & \mbox{if } i = 3 \text{ (whence } x \in A \text{ and } \\
+		0  & \mbox{if } i \neq 3
+	\end{array}
+\right.
+$$
+
+Define deg $: V \to \mathbb{N}$ by deg$(v) \coloneqq |\delta_D^\text{in}(v)| + |\delta_D^\text{out}(v)|$ (degree of $v$ in the underlying graph of $D$).
+
+Let $u : A' \to \mathbb{R} \cup \{+\infty\}$ be a capacity function defined by
+$$
+u((i, x)) \coloneqq
+\left\{
+	\begin{array}{ll}
+		1  & \mbox{if } i = 1, 2, 3 \text{ (whence } x \in A) \\
+		\text{deg}(x)/2 & \mbox{if } i = 4 \text{ (whence } x \in V) \\
+	\end{array}
+\right.
+$$
+
+\paragraph{\textbf{2.2 The Cuts in D'.}}
+
+
+Let us discover what are the sets $\delta_{D'}^\text{in}(v)$ and $\delta_{D'}^\text{out}(v)$ for each $v \in V'$. The results below come direct from the definition of $\varphi'$. Looking at figure 17.2 from the lectures may be helpful.
+
+For each $v' \in V'$
+
+If $v' = r$, then there is one arc from $r$ to each vertex of the form $(1, a)$, i.e.,
+\begin{align*}
+ \tag{2.1}
+ \begin{split}
+ \delta_{D'}^\text{in}(r) &= \emptyset \\
+ \delta_{D'}^\text{out}(r) &= \{1\} \times A
+ \end{split}
+\end{align*}
+
+If $v' = s$, then there is one arc from each vertex of the form $(2, v)$ to $s$, i.e.,
+\begin{align*}
+ \tag{2.2}
+ \begin{split}
+ \delta_{D'}^\text{in}(s) &= \{4\} \times V \\
+ \delta_{D'}^\text{out}(s) &= \emptyset
+ \end{split}
+\end{align*}
+
+If $v' \in \{1\} \times A$, let $(1, a) \coloneqq v'$, then there is one arc entering $v'$ (from $r$) and two arcs leaving $v'$, one to $(2, v)$ and other to $(2, w)$ with $(v, w) \coloneqq \varphi(a)$, then
+\begin{align*}
+ \tag{2.3}
+ \begin{split}
+ \delta_{D'}^\text{in}(v) &= \{(1, a)\} \\
+ \delta_{D'}^\text{out}(v) &= \{(2, a), (3, a)\}
+ \end{split}
+\end{align*}
+
+And if $v' \in \{2\} \times V$, let $(2, v) \coloneqq v$, then there is one arc leaving $v'$ (to $s$) and deg$(v)$ arcs entering at $v'$ (some corresponding to  $\delta_{D}^\text{in}(v)$ and the others corresponding $\delta_{D}^\text{out}(v)$), i.e.,
+\begin{align*}
+ \tag{2.4}
+ \begin{split}
+ \delta_{D'}^\text{in}(v) &= (\{2\} \times \delta_{D}^\text{in}(v)) \cup (\{3\} \times \delta_{D}^\text{out}(v)\} \\
+ \delta_{D'}^\text{out}(v) &=  \{(4, v)\}
+ \end{split}
+\end{align*}
+
+\begin{proposition}
+ Let $B \subseteq A$. If $D_B$ has a closed Eulerian trail, then, for each $v \in V$
+ $$|\delta_D^\text{in}(v) \setminus B| + |\delta_D^\text{out}(v) \cap B| = \text{deg}(v)/2.$$
+\end{proposition}
+\begin{proof}
+ By the way that $D_B$ is defined, we have that the arcs entering some vertex $v \in V$ are the ones that enter $v$ in $D$ that were not inverted (are not in $B$) together with the arcs that leave $v$ in $D$ that were inverted (are in $B$). So
+ \begin{align*}
+  \tag{2.5} \delta_{D_B}^\text{in}(v) = (\delta_D^\text{in}(v) \setminus B) \cup (\delta_D^\text{out}(v) \cap B)
+ \end{align*}
+ 
+Now, since $D_B$ does not changed the ends of any arc (only its order), $$|\delta_{D_B}^\text{in}(v)| + |\delta_{D_B}^\text{out}(v)| = |\delta_{D}^\text{in}(v)| + |\delta_{D}^\text{out}(v)| = \text{deg}(v)$$.
+
+And since $D_B$ has an eulerian trail, then $|\delta_{D_B}^\text{in}(v)| = |\delta_{D_B}^\text{out}(v)|$ for each $v \in V$, so 
+\begin{align*}
+ |\delta_{D_B}^\text{in}(v)| + |\delta_{D_B}^\text{out}(v)| = \text{deg}(v) &\implies \\
+ 2|\delta_{D_B}^\text{in}(v)| =\text{deg}(v) &\implies \\
+ |\delta_D^\text{in}(v) \setminus B| + |\delta_D^\text{out}(v) \cap B| = \text{deg}(v)/2 
+\end{align*}
+\end{proof}
+
+\paragraph{2.3 Building a Flow.}
+Let $B \subseteq A$. Let $f_B \in \mathbb{R}_+^{A'}$ be defined by
+$$
+f_B((i, x)) \coloneqq
+\left\{
+	\begin{array}{ll}
+		1 & \mbox{if } i = 1 \text{ (whence } x \in A)\\
+		\lbrack x \notin B \rbrack & \mbox{if } i = 2 \text{ (whence } x \in A)\\
+		\lbrack x \in B \rbrack & \mbox{if } i = 3 \text{ (whence } x \in A)\\
+		\text{deg}(x)/2 & \mbox{if } i = 4 \text{ (whence } x \in V)
+	\end{array}
+\right.
+$$
+
+Informally, the idea is that for each arc $a \in A$, let $(v, w) \coloneqq \varphi(a)$, if $a \notin B$, then there is flow in the arc $(2, a)$ but not in the arc $(3, a)$. And if $a \in B$, then there is flow in $(3, a)$ but not in $(2, a)$.
+
+Note that for each $a \in A$
+\begin{align*}
+\tag{2.6}
+ f_B((2, a)) + f_B((3, a)) = \lbrack a \notin B \rbrack + \lbrack a \in B \rbrack = 1
+\end{align*}
+
+\newtheorem{theorem}{Theorem}
+\begin{theorem}{\textbf{(From B to Flow)}}
+ Restore the context from 2.1 and let $B \subseteq A$. If $D_B$ has a closed Eulerian trail then there is a feasible $rs$-flow $f \in R_+^{A'}$ in $D'$ with respect to $u$. Furthermore value$(f) = |A|$ and $c^\intercal f = k(B)$.
+\end{theorem}
+\begin{proof}
+Set $f \coloneqq f_B$ as in 2.3. 
+
+We claim that $f$ is the desired flow.
+
+First, it is straighfoward from the definition of $f$ and $u$ that $f \leq u$.
+
+Next, we will show that $B_{D'}f = |A|(e_s - e_r)$
+
+For each $v' \in V'$, if $v' = r$, then 
+\begin{align*}
+B_{D'}f(r) &= f(\delta_{D'}^\text{in}(r)) - f(\delta_{D'}^\text{out}(r)) &\text{by (12.2) from lectures} \\
+&= f(\emptyset) - f(\{1\} \times A) &\text{by (2.1)}\\
+&= -|A| &\text{by definition of }f
+\end{align*}
+
+If $v' = s$, then 
+\begin{align*}
+B_{D'}f(s) &= f(\delta_{D'}^\text{in}(s)) - f(\delta_{D'}^\text{out}(s)) &\text{by (12.2) from lectures} \\
+&= f(\{4\} \times V) - f(\emptyset) &\text{by (2.2)}\\
+&= |A| &\text{by definition of }f
+\end{align*}
+
+If $v' \in \{1\} \times A$, let $(1, a) \coloneqq v'$, then 
+\begin{align*}
+B_{D'}f(v') &= f(\delta_{D'}^\text{in}(v')) - f(\delta_{D'}^\text{out}(v')) &\text{by (12.2) from lectures} \\
+&= f(\{(1, a)\}) - f(\{(2, a), (3, a)\}) &\text{by (2.3)}\\
+&= 1 - 1 &\text{by definition of }f \text{ and (2.6)} \\
+&= 0
+\end{align*}
+
+Last, if $v' \in \{2\} \times V$, let $(2, v) \coloneqq v'$ then 
+\begin{align*}
+B_{D'}f(v') &= f(\delta_{D'}^\text{in}(v')) - f(\delta_{D'}^\text{out}(v')) \\
+&= f(\{2\} \times \delta_D^\text{in}(v)) + f(\{3\} \times \delta_D^\text{out}(v)) -  f((4, v))&\text{by (2.4)} \\
+&= \sum_{a \in \delta_D^\text{in}(v)}{f((2, a))} + \sum_{a \in \delta_D^\text{out}(v)}{f((3, a))} -  f((4, v)) \\
+&= \sum_{a \in \delta_D^\text{in}(v)}{\lbrack a \notin B \rbrack} + \sum_{a \in \delta_D^\text{out}(v)}{\lbrack a \in B \rbrack} - \text{deg}(v)/2 &\text{by definition of }f\\ 
+&= |\delta_D^\text{in}(v) \setminus B| + |\delta_D^\text{out}(v) \cap B| - \text{deg}(v)/2 \\
+&= 0 &\text{by proposition 2}
+\end{align*}
+
+Indeed, the 4 cases above shows that $B_{D'}f = |A|(e_s - e_r)$.
+
+Now, it remains to prove that $c^\intercal f = k(B)$.
+
+It is straighfoward from the definition of $c$ that 
+\begin{align*}
+ \tag{2.7} c((i, x)) \neq 0 \iff i = 3, x \in A
+\end{align*}
+
+Finally, we have
+\begin{align*}
+ c^\intercal f &= \sum_{a \in A'}{c(a)f(a)} \\
+ &= \sum_{x \in A}{c((3, x))f((3, x))} &\text{by (2.7)} \\
+  &= \sum_{x \in A}{k(x)\lbrack x \in B \rbrack }  &\text{ by definition of $c$ and $f$} \\
+  &= k(B)
+\end{align*}
+\end{proof}
+
+\begin{theorem}{\textbf{(From Flow to B)}}
+Restore the context from 2.1 and let $f \in R_+^{A'}$ be a minimum-cost integral $rs$-flow in $D'$ (with respect to $u$ and cost function $c$) with value$(f) = |A|$.
+
+Let $B \coloneqq \{a \in A : f((3, a)) > 0\}$.
+
+Then $B$ is feasible for the original optimization problem and $k(B) = c^\intercal f$.
+\end{theorem}
+\begin{proof}
+We are assuming that the underlying graph of $D$ is connected, so that in order to prove that $D_B$ has a closed Eulerian trail, it suffices to show that $|\delta_{D_B}^\text{in}(v)| = |\delta_{D_B}^\text{out}(v)|$ for each $v \in V$.
+
+Our strategy will be analyse the flow through each layer of vertices in $D'$.
+
+Starting the first layer from $r$, note that the set $\delta_{D'}^\text{out}(r)$ has capacity
+\begin{align*}
+ u(\delta_{D'}^\text{out}(r)) &= u(\{1\} \times A)) &\text{by (2.1)} \\
+ &= \sum_{a \in A}{u((1, a))} \\
+ &= |A| &\text{by definition of }u
+\end{align*}
+
+So that each arc in $\delta_{D'}^\text{out}(r)$ is filled to capacity, because value$(f) = |A|$, i.e.,
+\begin{align*}
+ \tag{2.8}
+ f((1, a)) = u((1, a)) = 1 \text{ for each } (1, a) \in \delta_{D'}^\text{out}(r)
+\end{align*}
+
+Now, in the next layer, we have that for vertex $v' \in V'$ of the form $v' \coloneqq (1, a)$
+\begin{align*}
+\tag{2.9}
+ f(\delta_{D'}^\text{in}(v)) &= f((1, a)) &\text{by (2.3)}\\
+ &= 1 &\text{ by(2.8)}
+\end{align*}
+
+And, for each $a \in A$, set $(v, w) \coloneqq \varphi(a)$
+\begin{align*}
+ f((2, a)) + f((3, a)) &= f(\delta_{D'}^\text{out}((1, a))) &\text{by (2.3)}\\
+ &= f(\delta_{D'}^\text{in}((1, a))) &\text{ by flow conservation} \\
+ &= 1 &\text{ by (2.9)}
+\end{align*}
+
+And since $f$ is integral and $f \leq u$, we have that $f((2, a))$ and $f((3, a))$ are either $0$ or $1$. So the equation above and the definition of $B$ implies that 
+\begin{align*}
+\tag{2.10}
+\begin{split}
+ f((2, a)) &= 1 - f((3, a)) \\
+ &= \lbrack f((3, a)) = 0 \rbrack \\
+ &= \lbrack a \notin B \rbrack
+\end{split}
+\end{align*}
+and
+\begin{align*}
+\tag{2.11}
+\begin{split}
+ f((3, a)) &= \lbrack f((3, a)) = 1 \rbrack \\
+ &= \lbrack a \in B \rbrack
+\end{split}
+\end{align*}
+
+Now, in the third layer, for each vertex $v' \in V'$ of the form $v' \coloneqq (2, v)$, 
+\begin{align*}
+ f(\delta_{D'}^\text{in}((2, v))) &= f((\{2\} \times \delta_{D}^\text{in}(v)) \cup \{3\} \delta_{D}^\text{out}(v))  &\text{by (2.4)}\\
+ &= \sum_{a \in \delta_{D}^\text{in}(v)}{f((2, a))} + \sum_{a \in \delta_{D}^\text{out}(v)}{f((3, a))}  \\
+ &= \sum_{a \in \delta_{D}^\text{in}(v)}{\lbrack a \notin B \rbrack} + \sum_{a \in \delta_{D}^\text{out}(v)}{\lbrack a \in B \rbrack}  &\text{by (2.10) and (2.11)} \\
+ &= |\delta_{D}^\text{in}(v) \setminus B| + |\delta_{D}^\text{out}(v) \cap B| \\
+ &= |\delta_{D_B}^\text{in}(v)| &\text{by (2.5)} 
+\end{align*}
+And 
+\begin{align*}
+ f(\delta_{D'}^\text{out}((2, v))) &= f((4, v)) &\text{by (2.4)}
+\end{align*}
+
+So, the two results above shows that for each $v \in V$
+\begin{align*}
+ \tag{2.12}
+ |\delta_{D_B}^\text{in}(v)| &= f(\delta_{D'}^\text{in}((2, v))) \\
+ &= f(\delta_{D'}^\text{out}((2, v))) &\text{ by flow conservation} \\
+ &= f((4, v))
+\end{align*}
+
+In the last layer, note that the cut formed by $V' \setminus \{s\}$ in $D'$ has capacity 
+\begin{align*}
+u(\delta_{D'}^{\text{out}}(V' \setminus \{s\})) &= u(\delta_{D'}^{\text{in}}(s)) \\
+&= u(\{4\} \times V) &\text{by (2.2)}\\
+&= \sum_{v \in V}{u((4, v))} \\
+&= \sum_{v \in V}{\text{deg}(v)/2} &\text{by definition of }u \\
+&= \frac{1}{2}\sum_{v \in V}{(|\delta_D^\text{in}(v)| + |\delta_D^\text{out}(v)|)} \\
+&= \frac{1}{2}(\sum_{v \in V}{|\delta_D^\text{in}(v)|} + \sum_{v \in V}{|\delta_D^\text{out}(v)|)} \\
+&= \frac{1}{2}(|A| + |A|) \\
+&= |A|
+\end{align*}
+
+Then, since value$(f) = |A|$, every arc in $\delta_{D'}^{\text{out}}(V' \setminus \{s\})$ is filled to capacity.
+And hence $\delta_{D'}^{\text{out}}(V' \setminus \{s\}) = \delta_{D'}^{\text{in}}(s) = \{4\} \times V$ (by (2.2)) 
+\begin{align*}
+\tag{2.13}
+ f((4, v)) = u((4, v)) = \text{deg}(v)/2 &\text{ (by definition of }u)
+\end{align*}
+
+Note that, since the underlying graph of $D$ and $D_B$ are the same, we have that $|\delta_{D_B}^\text{in}(v)| + |\delta_{D_B}^\text{out}(v)| =|\delta_{D}^\text{in}(v)| + |\delta_{D}^\text{out}(v)| $
+
+Finally,
+\begin{align*}
+|\delta_{D_B}^\text{in}(v)| &= f((4, v)) &\text{by (2.12)} \\
+&= \text{deg}(v)/2 &\text{by (12.13)} \\
+&= \frac{|\delta_{D}^\text{in}(v)| + |\delta_{D}^\text{out}(v)|}{2} \\
+&= \frac{|\delta_{D_B}^\text{in}(v)| + |\delta_{D_B}^\text{out}(v)|}{2}
+\end{align*}
+
+And this implies that $|\delta_{D_B}^\text{in}(v)| = |\delta_{D_B}^\text{out}(v)|$. So $D_B$ has a closed Eulerian trail and $B$ is feasible for the original problem.
+
+The fact that $k(B) = c^\intercal f$ comes directly from the definition of B and (2.6).
+
+\end{proof}
+
+
+\paragraph{\textbf{2.4 Finally, The Algorithm.}} 
+
+The idea is to build $D'$, run min-cost flow algorithm to obtain a flow $f$, and then obtain the set $B$ as in Theorem 2.  
+
+Let MIN-COST-INTEGRAL-FLOW be an algorithm to solve the Minimum-cost Integral Flow Problem and suppose it is efficient. 
+
+Algorithm 1 is our solution to this exercise.
+
+\begin{algorithm}{}
+\begin{algorithmic}[1]
+\caption{Min-cost Inversions necessary to Eulerian Trail using Flow}
+\Procedure{}{$D,k$}:
+\State \Comment Define $D'$, $c$ and $u$ as in 2.1
+\State $V' \gets \{r, s\} \cup (V \sqcup A)$
+\State $A' \gets A \sqcup A \sqcup A\sqcup V$
+\State Define $c, u$ and $\varphi'$ as in 2.1
+\State $D' \gets (V', A', \varphi')$
+\State $f \gets $MIN-COST-INTEGRAL-FLOW$(D', c, u, r, s, |A|)$
+\If{$f = \perp$ (Infeasible)}
+\State \textbf{return} Infeasible
+\Else
+\State $B \gets \{a \in A : f((3, a)) > 0\}$
+\State \textbf{return} $B$
+\EndIf
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Since all definitions are made in linear time, MIN-COST-INTEGRAL-FLOW is assumed to be efficient and there is no loops or recursion in Algorithm 1, then it is efficient.
+
+For the correctness, we have that the return statement from line 9 is correct, because if there was a feasible set $B$, then there would be a feasible flow $f$ by Theorem 1.
+
+Furthermore, the set $B$ returned in line 12 is feasible by Theorem 2 and it is optimal, because if it was not, there would be a better set $B'$ with $k(B') < k(B)$, but then the flow $f$ would not be minumum, because Theorem 1 shows that there would be a flow $f'$ with cost $c^\intercal f' = k(B') < k(B) = c^\intercal f$.
+
+\blankpage
+
+\section*{Exercise 3}
+
+The idea is to add arcs from the consumers to the producers, and then find a circulation in this new digraph.
+
+Let $A_{+-} \coloneqq \{(v_+, v_-) : v_+ \in V_+, v_- \in V_-\}$ be the set of pairs of consumers and producers  
+Let $A' \coloneqq A \sqcup A_{+-}$.
+
+Define $\varphi' : V \to A'$ as
+$$
+\varphi'((i, x)) \coloneqq
+\left\{
+	\begin{array}{ll}
+		\varphi(x)  & \mbox{if } i = 1 \text{ (whence } x \in A) \\
+		x  & \mbox{if } i = 2 \text{ (whence } x \in A_{+-}
+    \end{array}
+\right.
+$$
+
+Now let $D' \coloneqq (V, A', \varphi')$ be a digraph.
+
+Let $f'$ be a circulation in $D'$.
+
+By Theorem 18.7 from the lecture notes (decomposition of circulations), there is a set $\mathcal{C}$ of cycles in $D'$ and a vector $y \in \mathbb{R}_+^\mathcal{C}$ such that
+$$
+f'  = \sum_{C \in \mathcal{C}}{y_C\mathbbm{1}_C}
+$$
+
+Next, find all cycles such that there is an arc of $A_{+-}$ and remove this arc.
+
+For each $C \in \mathcal{C}$, if there is an arc $a \in A_{+-} \cap A(C)$, set $(v_+, v_-) \coloneqq a$.
+Unpack $C$ as $C \coloneqq \langle v_-, a_0, v_0, ..., v_+, a, v_- \rangle$.
+
+Now, we remove $a$ form $C \in $ and get a path $P(C) \coloneqq \langle v_-, a_0, v_0, ..., v_+ \rangle$. So that the arcs of $P(C)$ are not in $A_{+-}$ (since we removed the ones that were in $A_+-$).  Note that $P(C)$ starts in some vertex of $V_-$ and ends in some vertex of $V_+$. 
+
+
+Let $\mathcal{C}' \coloneqq \{C \in \mathcal{C} : A(C) \cap A_{+-} \neq \emptyset \}$ be the set of cycles that goes through some arc of $A_{+-}$. Then
+
+$$
+f = \sum_{C \in (\mathcal{C} \setminus \mathcal{C}') }{x_C \mathbbm{1}_C} + \sum_{C \in \mathcal{C}'}{y_C \mathbbm{1}_{P(C)}}
+$$
+
+Organizing the sets, let $\mathcal{P} \coloneqq \{P(C) : C \in \mathcal{C}' \}$ and let $x \in \mathbb{R}_+^\mathcal{P}$ be defined by $x_{P(C)} \coloneqq y_C$. Thus we have
+
+$$
+f = \sum_{C \in (\mathcal{C} \setminus \mathcal{C}') }{x_C \mathbbm{1}_C} + \sum_{P \in \mathcal{P}}{x_P \mathbbm{1}_{P}}
+$$
+
+So that the sets $\mathcal{C} \setminus \mathcal{C'}$ and $\mathcal{P}$ satisfy the conditions stated.  
+
+\blankpage
+
+\section*{Exercise 4}
+We claim that every vertex of $G$ is not isolated.
+
+Since $G$ is loopless and $E \neq \emptyset$, there is one edge $e \in E$ joining two different vertices, implying that $|V| \geq 2$.
+
+Therefore, for each $v \in V$, there is $w \in V$ with $w \neq v$, so that $v$ is in the vertex set of $G - w$. But $G - w$ has a perfect matching, meaning that $v$ is saturated by some edge $e \in E$. Thus 
+\begin{align*}
+ \delta(v) \neq \emptyset &\text{ for each } v \in V.
+\end{align*} 
+
+Now, suppose for the sake of contradiction that $G$ is bipartite and let $U, W \subseteq V$ be such that $G$ is $(U, W)$-bipartite. And since $G$ has no isolated vertices, we have that $V = U \cup W$.
+
+Let $u \in U$ and let $M$ be a perfect matching in $G - u$. Then
+\begin{align*}
+ \tag{4.1}
+ |M| = \frac{|V \setminus \{u\}|}{2} = \frac{|V| - 1}{2} = \frac{|U| + |W| - 1}{2}
+ \end{align*} 
+
+
+Moreover, each vertex $w$ in $W$ is saturated by exactly one edge of $M$ and each edge $e \in M$ saturates one vertex of $W$, because $G - u$ is $(U-W)$-bipartite. Then
+\begin{align*}
+ \tag{4.2}
+   |M| &= |W|
+\end{align*}
+
+Now, (4.1) and (4.2) shows that 
+\begin{align*}
+|W| &= \frac{|U| + |W| - 1}{2}
+\end{align*}
+
+Then
+\begin{align*}
+\tag{4.3}
+|W| &= |U| - 1
+\end{align*}
+
+Analogously, let $w \in W$ and $M'$ be a perfect matching of $G - w$. Then
+\begin{align*}
+ \tag{4.4}
+ |M'| = \frac{|V \setminus \{w\}|}{2} = \frac{|V| - 1}{2} = \frac{|U| + |W| - 1}{2}
+ \end{align*} 
+
+Moreover, each vertex $u$ in $U$ is saturated by exactly one edge of $M'$ and each edge $e \in M'$ saturates one vertex of $U$, because $G - w$ is $(U-W)$-bipartite. Then
+\begin{align*}
+ \tag{4.5}
+   |M'| &= |U|
+\end{align*}
+
+Now, (4.4) and (4.5) shows that 
+\begin{align*}
+|U| &= \frac{|U| + |W| - 1}{2}
+\end{align*}
+
+Then
+\begin{align*}
+\tag{4.6}
+|U| &= |W| - 1
+\end{align*}
+
+Finally, (4.3) and (4.6) shows that 
+\begin{align*}
+|W| &= (|W| - 1) - 1 &\implies \\
+|W| &= |W| - 2 &\implies \\
+0 &= -2
+\end{align*}
+
+A contradiction.
+
+Thus, $G$ is not bipartite.
+
+
+\end{document}

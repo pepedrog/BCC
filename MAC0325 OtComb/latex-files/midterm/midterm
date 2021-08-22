@@ -1,0 +1,332 @@
+\documentclass[a4paper,10pt, leqno]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{array}
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage{bbm}
+
+
+\def\blankpage{%
+      \null%
+      \clearpage}
+
+\let\oldref\ref
+\renewcommand{\ref}[1]{(\oldref{#1})}
+
+%opening
+\title{MAC0325 Combinatorial Optimization \\
+        \large Midterm}
+\author{Pedro Gigeck Freire \\
+        10737136}
+\date{October 21, 2020}
+
+%\setlength{\parindent}{0.5em}
+%\setlength{\parskip}{0.1em}
+\begin{document}
+
+\maketitle
+
+\section*{Exercise 1}
+Let $P^*$ be an optimal solution for (1.1), i.e., an $(r, s)$-path in $D$ of minimum cost. Let $k^* \coloneqq c(P^*)$ be the optimal value of (1.1).
+
+Define the function
+$$R : [k^*] \to \mathcal{P}(V) $$
+$$
+i \mapsto R_i \coloneqq \{v \in V : \text{ there is a } (r, v)\text{-path $P$ in } D \text{ such that } c(P) < i \}
+$$
+
+Informally, $v \in R_i$ means that the cost between $r$ and $v$ is smaller then $i$.
+
+
+\newtheorem{proposition}{Proposition}
+\begin{proposition}
+    Let $i \in [k^*]$ and let $v \in R_i$. Then $v \in R_j$ for any $i \leq j \leq k^*$
+\end{proposition}
+\begin{proof}
+Since $v \in R_i$ there is a $(r, v)$-path $P$ with $c(P) < i$. But then, if $j \geq i$, $c(P) < j$, thus $v \in R_j$
+\end{proof}
+
+
+\begin{proposition}
+Let $j, t \in \mathbb{N}$ with $j, t \geq 1$, let $a \in A$ such that $a \in \delta^{\text{out}}(R_t)$ and let $(u, v) \coloneqq \varphi(a)$. Then
+    $$\sum_{i \in [t]}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}(a)} = j \implies a \in \delta^{\text{out}}(R_i) \text{ for each } i \in \{t - j + 1, ..., t\}$$
+\end{proposition}
+\begin{proof}
+Since $a \in \mathbbm{1}_{\delta^{\text{out}}(R_t)}$ we have that $u \in R_t$ and $v \notin R_t$.
+And $v \notin R_i$ for any $i \in [t]$, because if $v$ was in any $R_i$ then it would be in $R_t$ by Proposition 1.
+
+Take the set $S \coloneqq \{\delta^{\text{out}}(R_{t - j + 2}), ..., \delta^{\text{out}}(R_t)\}$, we have that $|S| = j - 1$, so if $a$ was only in the sets of $S$, the sum of incidence vectors would be at most $j - 1$.
+
+Thus there is at least one $R_k$ with $k \leq t - j + 1$ such that $a \in \delta^{\text{out}}(R_k)$, but then $u \in R_k$, and by Proposition 1, for every $i \geq t - j + 1 \geq k$, $u \in R_i$. But we know that $v \notin R_i$, so $a \in \delta^{\text{out}}(R_i)$. And this proves our proposition.
+\end{proof}
+
+\newtheorem{lemma}{Lemma}
+\begin{lemma}
+    \label{homo1}
+    $k^*$ is a feasible solution of (1.2). 
+\end{lemma}
+\begin{proof}
+Since all arcs have natural costs, we have that
+
+\begin{equation*}
+\tag{1.3}k^* \in \mathbb{N}
+\end{equation*}
+
+Moreover,
+take the $(r, r)\text{-path } \langle r \rangle$ with cost $0 < i$, so that $r \in R_i$.
+And suppose that $s \in R_i$ than there would be a $(r, s)$-path $P'$ with cost $c(P') < i \leq k^* = c(P^*)$ which contradicts the optimality of $P^*$, thus $s \notin R_i$. Indeed,
+
+\begin{equation*}
+\tag{1.4}
+r \in R_i \text{ and } s \notin R_i \text{ for each } i \in [k^*]
+\end{equation*}
+
+Now, let $t \in \mathbb{N}$. We will prove by induction on $t$ that \[\sum_{i \in [t]}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}} \leq c\]
+
+The base case t = 0 holds because there is no $i \in [0]$, then
+\[\sum_{i \in [0]}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}} = 0 \leq c\]
+
+(Induction Hypothesis) Suppose that 
+\[\sum_{i \in [t - 1]}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}} \leq c\]
+
+Now, suppose, by the sake of contradiction, that there is at least one arc $a \in A$, with $(u, v) \coloneqq \varphi(a)$, such that
+
+$$
+\sum_{i \in [t]}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}(a)} > c(a) 
+$$
+
+We have
+\begin{align*}
+0 &\leq c(a)-\sum_{i \in [t - 1]}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}(a)} \text{ (by induction hypothesys)} \\
+&< \sum_{i \in [t]}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}(a)}-\sum_{i \in [t - 1]}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}(a)} \\
+&= \mathbbm{1}_{\delta^{\text{out}}(R_t)}(a)\\
+&\leq 1 
+\end{align*}
+
+Summing up, we got
+$$
+0 < \mathbbm{1}_{\delta^{\text{out}}(R_t)}(a) \leq 1 \implies
+a \in \delta^{\text{out}}(R_t)
+$$
+
+And
+$$ 0 \leq c(a)-\sum_{i \in [t - 1]}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}(a)}  < 1 \implies 
+$$
+$$
+c(a) = \sum_{i \in [t - 1]}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}(a)} \implies 
+$$
+$$
+c(a) + 1 = \sum_{i \in [t]}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}(a)}
+$$
+
+Finally, by Proposition 2, taking $j = c(a) + 1$ we have that $a \in \delta^{\text{out}}(R_{t - (c(a) + 1) + 1})$. Which means that $u \in R_{t - c(a)}$, so there is a $(r, u)$-path $P$ of cost $c(P) < t - c(a)$
+
+So we can create the $(r, v)$-path $P' \coloneqq P \cdotp \langle u, a, v \rangle$ of cost $$c(P') = c(P) + c(a) < t - c(a) + c(a)= t $$
+
+This shows that $v \in R_t$, a contradiction because $a \in \delta^{\text{out}}(R_t)$.
+
+Hence, there can not be any arc $a \in A$ with $$
+\sum_{i \in [t]}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}(a)} > c(a) 
+$$
+
+So, 
+\begin{equation*}
+\tag{1.5}
+\sum_{i \in [k^*]}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}} \leq c 
+\end{equation*}
+
+Hence, by (1.3), (1.4) and (1.5), $k^*$ is a feasible solution of problem (1.2). 
+\end{proof}
+
+
+\newtheorem{theorem}{Theorem}
+\begin{theorem}
+    $k^*$ is the optimal value of (1.2). 
+\end{theorem}
+\begin{proof}
+    Let $k' \in \mathbb{N}$ be the optimal value of (6.2).
+    Let $R' : [k'] \to \mathcal{P}(V)$ be a function that satisfies the constraints of (6.2).
+    In particular
+    \begin{equation*}
+    \tag{1.6}
+    \sum_{i \in [k']}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}} \leq c
+    \end{equation*}
+    
+    Since $r \in R'_i$ and $s \notin R'_i$ for each $i \in [k']$, then any $(r, s)$-path $P$ in $D$ has one arc traversed by $R_i$, i.e, there is $a \in A(P)$ such that $a \in \delta^{\text{out}}(R_i)$ (Exercise 3.1 from lectures).
+    This implies that
+    
+    \begin{align*}
+    k^* = c(P^*) &= \sum_{a \in A(P^*)}{c(a)} \\
+    &\geq \sum_{a \in A(P^*)} {\sum_{i \in [k']}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}(a)}} &\text{  (by (1.6))} \\
+    &\geq \sum_{a \in A(P^*)} {\sum_{(i \in [k'] \text {, } a \in \delta^{\text{out}}(R_i))}{\mathbbm{1}_{\delta^{\text{out}}(R_i)}(a)}} \\
+    &\geq k' &\text{  (by (exercise 3.1))}\\
+    \end{align*}
+    
+    So $k' \leq k^*$ and we know by Lemma 1 that $k^*$ is a feasible value of (6.2). Hence $k^*$ is the optimal value of (6.2).
+\end{proof}
+
+\blankpage
+
+\section*{Exercise 2}
+\subsection*{(i)}
+\begin{proposition}
+ Let $S \subseteq V$ be a stable set. Then $V \setminus S$ is a vertex cover of $G$.
+\end{proposition}
+\begin{proof}
+Suppose, by the sake of contradiction that $V \setminus S$ is not a vertex cover, i.e., there is an edge $e \in E$ such that $e \cap (V \setminus S) = \emptyset$. Then we can use some set manipulation and get (in the right there is the  manipulation used)
+
+\begin{align*}
+e \cap (V \setminus S) &= \emptyset \implies \\
+(e \cap V) \setminus (e \cap S) &= \emptyset \implies &(A \cap (B \setminus C) = (A \cap B) \setminus (A \cap C))\\
+e \setminus (e \cap S) &= \emptyset \implies \\
+(e \setminus e) \cup (e \setminus S) &= \emptyset \implies &(A \setminus (B \cap C) = (A \setminus B) \cup (A \setminus C))\\
+e \setminus S &= \emptyset \implies \\
+e &\subseteq S \implies \\
+e &\in E[S]
+\end{align*}
+
+But this last statement contradicts the fact that S is stable. Thus $V \setminus S$ is a vertex cover. 
+
+\end{proof}
+
+\begin{proposition}
+ Let $K \subseteq V$ be a vertex cover of $G$. Then $S \coloneqq V \setminus K$ is a stable set.
+\end{proposition}
+\begin{proof}
+The proof is the other direction of the proof¨ we just made. Suppose, by the sake of contradiction that $S$ is not a stable set, i.e., there is an edge $e \in E[S]$. Then
+
+\begin{align*}
+e &\in E[S] \implies \\ 
+e &\subseteq S \implies \\
+e \setminus S &= \emptyset \implies \\
+(e \setminus e) \cup (e \setminus S) &= \emptyset \implies \\
+e \setminus (e \cap S) &= \emptyset \implies &(A \setminus B) \cup (A \setminus C) = (A \setminus (B \cap C))\\
+(e \cap V) \setminus (e \cap S) &= \emptyset \implies &(e = e \cap V)\\
+e \cap (V \setminus S) &= \emptyset \implies &((A \cap B) \setminus (A \cap C)) = A \cap (B \setminus C) \\
+e \cap (V \setminus (V \setminus K)) &= \emptyset \implies \\
+e \cap (V \cap K) &= \emptyset \implies &(A \setminus (A \setminus B) = A \cap B) \\
+e \cap K &= \emptyset
+\end{align*}
+But this last statement contradicts the fact that K is a vertex cover. Thus $S$ is a stable set. 
+\end{proof}
+
+\begin{theorem}
+$\alpha(G) + \tau(G) = |V|$
+\end{theorem}
+\begin{proof}
+Let $K^*$ be a vertex cover of size $\tau(G)$.
+Let $S^* \coloneqq V \setminus K^*$. By Proposition 4, $S^*$ is a stable set and its size is $|S^*| = |V| - \tau(G)$. 
+
+Let $S'$ be a maximum stable set, i.e., $|S'| = \alpha(G)$. Now let $K' \coloneqq V \setminus S'$. By Proposition 3, $K'$ is a vertex cover.
+
+Since $K*$ is minimum 
+\begin{align*}
+|K'| &\geq |K^*| \implies \\
+|K'| - |V| &\geq |K^*| - |V| \implies \\
+|V| - |K'| &\leq |V| - |K^*| \implies \\
+|S'| &\leq |S^*|
+\end{align*}
+
+But $S'$ is the maximum stable set, so $|S^*| = \alpha(G)$, then $\alpha(G) = |V| - \tau(G) \implies \alpha(G) + \tau(G) = |V|$.
+\end{proof}
+
+
+\subsection*{(ii)}
+Since $G$ is a bipartite graph, by Konig's matching theorem (8.8 from lectures) we have that $\nu(G) = \tau(G)$.
+
+We claim that $\rho(G) = \alpha(G)$.
+
+Let $S \subseteq V$ be a stable set of size $\alpha(G)$ and let $F \subseteq E$ be an edge cover of size $\rho(G)$ (we know it exists because there is no isolated vertex). 
+
+For each vertex $v \in S$ there is one edge $f \in F$ such that $v \in f$ but every distinct vertex require one distinct edge in the cover, because $S$ is stable, so there is no edge that covers two vertices in $S$. Thus $|F| \geq |S|$.
+
+Now suppose there are two edges $e, f \in F$ that covers the same vertex in $S$, say $e  \coloneqq \{s, k\}, f \coloneqq \{s, l\}$, for $s \in S$ and $ k, l \notin S$ 
+
+By Lemma 1 we know that $V \setminus S$ is a minumum vertex cover, but then we could substitute $\{k, l\}$ by just $\{s\}$ and obtain a smaller vertex cover, which is a contradiction. 
+
+Thus there is one and only one edge in $F$ for each vertex in $S$. And then $|F| = |S|$, i.e., $\rho(G) = \alpha(G)$ and then $\nu(G) + \rho(G) = \tau(G) + \alpha(G) = |V|$, by item (i).  
+
+\subsection*{(iii)}
+(I ran out of time)
+
+
+\blankpage
+\section*{Exercise 3}
+
+\textit{Necessity}:
+
+Let $\{ M_1, M_2, ..., M_k\}$ be $k$ disjoint perfect matchings in G. Then each vertex $v \in V$ is saturated by each one of the $M_i$ matchings by one distinct edge. It means that there are at least $k$ edges that saturates $v$, i.e., 
+\begin{equation*}
+\tag{3.1}
+ |\delta(\{v\})| \geq k \text{ for each } v \in V
+\end{equation*}
+
+
+For any $R \in V$ we have that the number of edges of $\delta(R)$ is equal to the number of edges that leaves (or we could say enter) any vertex, except for the edges that joins two vertices in $S$, i.e.,  
+
+\begin{equation*}
+\tag{3.2}
+ |\delta(R)| = \sum_{v \in S}{|\delta(\{v\})|} -  |E[S]| \text{ for each } S \subseteq V
+\end{equation*}
+
+
+From this, taking $R = V$ we have that 
+\begin{align*}
+ 0 = |\delta(V)| &= \sum_{v \in V}{|\delta(\{v\})|} -  |E[V]| \\
+ &= \sum_{v \in V}{|\delta(\{v\})|} - |E| \\
+ &\geq \sum_{v \in V}{k} - |E| &\text{(by 3.1)}\\ 
+ &= |V|k - |E| \\
+ &\geq |U|k - |E| \\
+ &= tk - |E| 
+\end{align*}
+
+Thus
+\begin{equation*}
+\tag{3.3}
+ |E| \geq tk
+\end{equation*}
+
+Finally, let $P \subseteq U$ and $Q \subseteq W$, the number of edges between $P$ and $Q$ is $E[P \cup Q]$ because there is no edge between two vertices of $P$ nor between two vertices of $Q$, so every edge in $E[P \cup Q]$ needs to be between them. 
+
+Now, summing up everything, we got
+\begin{align*}
+E[P \cup Q] &= \sum_{v \in P \cup W}{|\delta(\{v\})|} - |\delta(P \cup W)| &\text{(by 3.2)} \\
+&\geq \sum_{v \in P \cup W}{|\delta(\{v\})|} - |E| \\
+&\geq \sum_{v \in P \cup W}{|\delta(\{v\})|} - tk &\text{(by 3.3)}\\
+&=  \sum_{v \in P}{|\delta(\{v\})|} + \sum_{v \in Q}{|\delta(\{v\})|} - tk &\text{(because $P$ and $Q$ are disjoint)} \\
+&\geq \sum_{v \in P}{k} + \sum_{v \in Q}{k} - tk &\text{(by 3.1)} \\
+&= |P|k + |Q|k - tk \\
+&= k(|P| + |Q| - t)
+\end{align*}
+
+This concludes the proof for necessity.\\
+
+\textit{Sufficiency}:
+
+We will prove, by induction on $k$ that if there are at least $k(|P| + |Q| - t)$ edges between any subsets $P \subseteq U$, $Q \subseteq W$, than $G$ has $k$ perfect matchings.
+
+The base case $k = 0$ holds, because every graph has 0 perfect matchings (if it has more, than it still has (at least) 0).
+
+Now suppose that if $G$ is a graph in which there are at least $(k - 1)(|P| + |Q| - t)$ edges between any subsets $P \subseteq U$, $Q \subseteq W$, then $G$ has $k - 1$ perfect matchings. (Induction Hypothesis)
+
+We can add edges to $G$, so that there there are at least $k(|P| + |Q| - t)$ edges between any subsets $P \subseteq U$, $Q \subseteq W$. 
+
+By the induction hypothesys, we know that there are at least $k - 1$ perfect matchings, we just need to find another one. But we claim that these edges that were added saturates all vertices, and so there is a new perfect matching, disjoint of the others.
+
+Let $u \in U$, take $P = \{u\} \subseteq U$ and $Q = W$.
+Then we have that the number of edges between $P$ and $W$ is at least $k(|P| + |Q| - t) = k(1 + t - t) = k$.
+
+Thus for any vertex $u \in U$ there are at least $k$ edges between $u$ and $W$. By an analogous argument we can show that there are at least $k$ edges from any vertex $w \in W$ to the set $U$.
+
+So every vertex in $U$ and $W$ is an end point of at least one edge that is not covered by any matching, thus these edges contains a new perfect matching.
+
+Hence $G$ has $k$ disjoint perfect matchings.
+
+This ends the proof for sufficiency.
+\end{document}
